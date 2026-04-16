@@ -220,7 +220,7 @@ function MessageRow({
   isLast: boolean;
 }) {
   return (
-    <Box sx={{ mb: 1.5 }}>
+    <Box mb={isLast ? 0.5 : 1.5}>
       <Box sx={{ display: "flex", gap: 1.5, alignItems: "baseline", mb: 0.3 }}>
         <Typography
           sx={{
@@ -308,7 +308,7 @@ export function Terminal() {
           overflowY: "auto",
           minHeight: 0,
           px: 2,
-          py: 1.5,
+          pt: 1.5,
           "&::-webkit-scrollbar": { width: "4px" },
           "&::-webkit-scrollbar-track": { bgcolor: "transparent" },
           "&::-webkit-scrollbar-thumb": {
