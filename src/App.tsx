@@ -27,7 +27,7 @@ export default function App() {
           <Box
             sx={{
               display: "grid",
-              gridTemplateColumns: "260px 1fr 450px",
+              gridTemplateColumns: "260px 500px 1fr",
               gap: 2.5,
               alignItems: "start",
               flexGrow: 1,
@@ -39,9 +39,9 @@ export default function App() {
               <UtilButton />
             </Box>
 
-            <ShopPanel />
-
             <Terminal />
+
+            <ShopPanel />
           </Box>
         </Box>
       </GameProvider>

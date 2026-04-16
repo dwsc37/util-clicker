@@ -1,6 +1,11 @@
 import { GENERATORS, type Generator } from "../data/generators";
 import { UPGRADES, type Upgrade } from "../data/upgrades";
-import { EVENTS, type GameEvent, type QTEEvent } from "../data/events";
+import {
+  EVENTS,
+  type GameEvent,
+  type QTEChoice,
+  type QTEEvent,
+} from "../data/events";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -10,7 +15,7 @@ export type TerminalMessage = {
   id: string;
   text: string;
   timestamp: number;
-  isNew: boolean;
+  qteChoices?: QTEChoice[];
 };
 
 export type GameState = {
@@ -23,7 +28,7 @@ export type GameState = {
   purchasedUpgrades: Record<string, true>;
   terminalMessages: TerminalMessage[];
   triggeredEvents: Record<string, true>;
-  activeQTE: QTEEvent | null;
+  activeMessage: TerminalMessage | null;
 };
 
 export type GameAction =
@@ -31,7 +36,7 @@ export type GameAction =
   | { type: "TICK"; payload: { delta: number } }
   | { type: "BUY_GENERATOR"; payload: { generatorId: string } }
   | { type: "BUY_UPGRADE"; payload: { upgradeId: string } }
-  | { type: "MARK_MESSAGE_READ"; payload: { messageId: string } }
+  | { type: "ACKNOWLEDGE_MESSAGE" }
   | { type: "RESOLVE_QTE"; payload: { choiceIndex: 0 | 1 } };
 
 // ---------------------------------------------------------------------------
@@ -43,7 +48,7 @@ export const ACTIONS = {
   TICK: "TICK",
   BUY_GENERATOR: "BUY_GENERATOR",
   BUY_UPGRADE: "BUY_UPGRADE",
-  MARK_MESSAGE_READ: "MARK_MESSAGE_READ",
+  ACKNOWLEDGE_MESSAGE: "ACKNOWLEDGE_MESSAGE",
   RESOLVE_QTE: "RESOLVE_QTE",
 } as const;
 
@@ -67,7 +72,7 @@ export function buildInitialState(): GameState {
     purchasedUpgrades: {},
     terminalMessages: [],
     triggeredEvents: {},
-    activeQTE: null,
+    activeMessage: null,
   };
 }
 
@@ -126,11 +131,19 @@ export function computeTotalUPS(
 // ---------------------------------------------------------------------------
 
 function makeEventMessage(event: GameEvent): TerminalMessage {
+  if (event.type === "qte") {
+    return {
+      id: event.id,
+      text: event.message,
+      timestamp: Date.now(),
+      qteChoices: (event as QTEEvent).choices,
+    };
+  }
+
   return {
     id: event.id,
     text: event.message,
     timestamp: Date.now(),
-    isNew: true,
   };
 }
 
@@ -139,7 +152,6 @@ function makeGeneratorMessage(generator: Generator): TerminalMessage {
     id: generator.id,
     text: generator.flavourText,
     timestamp: Date.now(),
-    isNew: true,
   };
 }
 
@@ -148,7 +160,6 @@ function makeUpgradeMessage(upgrade: Upgrade): TerminalMessage {
     id: upgrade.id,
     text: upgrade.flavourText,
     timestamp: Date.now(),
-    isNew: true,
   };
 }
 
@@ -158,10 +169,10 @@ function getPendingEvents(state: GameState): GameEvent[] {
   ).sort((a, b) => a.unlockAt - b.unlockAt) as GameEvent[];
 }
 
-function addMessages(state: GameState): GameState {
+function triggerMessage(state: GameState): GameState {
   let current = state;
 
-  if (current.activeQTE !== null) return current;
+  if (current.activeMessage !== null) return current;
 
   const pending = getPendingEvents(state);
 
@@ -170,51 +181,35 @@ function addMessages(state: GameState): GameState {
       ...current.triggeredEvents,
       [event.id]: true,
     };
-
-    if (event.type === "message") {
-      current = {
-        ...current,
-        terminalMessages: [
-          ...current.terminalMessages,
-          makeEventMessage(event),
-        ],
-        triggeredEvents: newTriggered,
-      };
-    } else {
-      current = {
-        ...current,
-        terminalMessages: [
-          ...current.terminalMessages,
-          makeEventMessage(event),
-        ],
-        triggeredEvents: newTriggered,
-        activeQTE: event as QTEEvent,
-      };
-      return current;
-    }
+    const message = makeEventMessage(event);
+    current = {
+      ...current,
+      terminalMessages: [...current.terminalMessages, message],
+      triggeredEvents: newTriggered,
+      activeMessage: message,
+    };
+    return current;
   }
 
   for (const generator of GENERATORS) {
     if (current.terminalMessages.find((m) => m.id === generator.id)) continue;
     if (current.ownedGenerators[generator.id] === 0) continue;
+    const message = makeGeneratorMessage(generator);
     current = {
       ...current,
-      terminalMessages: [
-        ...current.terminalMessages,
-        makeGeneratorMessage(generator),
-      ],
+      terminalMessages: [...current.terminalMessages, message],
+      activeMessage: message,
     };
   }
 
   for (const upgrade of UPGRADES) {
     if (current.terminalMessages.find((m) => m.id === upgrade.id)) continue;
     if (!current.purchasedUpgrades[upgrade.id]) continue;
+    const message = makeUpgradeMessage(upgrade);
     current = {
       ...current,
-      terminalMessages: [
-        ...current.terminalMessages,
-        makeUpgradeMessage(upgrade),
-      ],
+      terminalMessages: [...current.terminalMessages, message],
+      activeMessage: message,
     };
   }
 
@@ -234,7 +229,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         utils: state.utils + gained,
         totalUtilsEarned: state.totalUtilsEarned + gained,
       };
-      return addMessages(next);
+      return triggerMessage(next);
     }
 
     case ACTIONS.TICK: {
@@ -255,7 +250,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         totalUtilsEarned: state.totalUtilsEarned + gained,
         generatorEarnings: newEarnings,
       };
-      return addMessages(next);
+      return triggerMessage(next);
     }
 
     case ACTIONS.BUY_GENERATOR: {
@@ -281,7 +276,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         utilsPerSecond: computeTotalUPS(newOwned, state.purchasedUpgrades),
       };
 
-      return addMessages(next);
+      return triggerMessage(next);
     }
 
     case ACTIONS.BUY_UPGRADE: {
@@ -303,33 +298,31 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         utilsPerSecond: computeTotalUPS(state.ownedGenerators, newPurchased),
       };
 
-      return addMessages(next);
+      return triggerMessage(next);
     }
 
-    case ACTIONS.MARK_MESSAGE_READ: {
-      const { messageId } = action.payload;
-      return {
+    case ACTIONS.ACKNOWLEDGE_MESSAGE: {
+      const next: GameState = {
         ...state,
-        terminalMessages: state.terminalMessages.map((m) =>
-          m.id === messageId ? { ...m, isNew: false } : m,
-        ),
+        activeMessage: null,
       };
+      return next;
     }
 
     case ACTIONS.RESOLVE_QTE: {
-      if (!state.activeQTE) return state;
+      if (!state.activeMessage || !state.activeMessage.qteChoices) return state;
       const { choiceIndex } = action.payload;
-      const choice = state.activeQTE.choices[choiceIndex];
+      const choice = state.activeMessage.qteChoices[choiceIndex];
 
       const consequenceMessage = makeEventMessage(choice.consequence);
 
       const next: GameState = {
         ...state,
-        activeQTE: null,
         terminalMessages: [...state.terminalMessages, consequenceMessage],
+        activeMessage: consequenceMessage,
       };
 
-      return addMessages(next);
+      return next;
     }
   }
 }
