@@ -126,6 +126,26 @@ function UpgradeCard({
   );
 }
 
+function SectionHeader({ label, count }: { label: string; count: number }) {
+  return (
+    <Typography
+      variant="caption"
+      sx={{
+        display: "block",
+        letterSpacing: "0.1em",
+        textTransform: "uppercase",
+        color: "text.secondary",
+        fontSize: "1rem",
+        mb: 1,
+        mt: 3,
+        "&:first-of-type": { mt: 0 },
+      }}
+    >
+      {label} ({count})
+    </Typography>
+  );
+}
+
 export function UpgradePanel() {
   const { state, dispatch } = useGame();
   const { utils, ownedGenerators, purchasedUpgrades } = state;
@@ -165,19 +185,7 @@ export function UpgradePanel() {
     >
       {available.length > 0 && (
         <>
-          <Typography
-            variant="caption"
-            sx={{
-              display: "block",
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              color: "text.secondary",
-              fontSize: "1rem",
-              mb: 1,
-            }}
-          >
-            Available ({available.length})
-          </Typography>
+          <SectionHeader label="Available" count={available.length} />
           <Box sx={gridSx}>
             {available.map((u) => (
               <UpgradeCard
@@ -194,21 +202,7 @@ export function UpgradePanel() {
 
       {locked.length > 0 && (
         <>
-          <Typography
-            variant="caption"
-            sx={{
-              display: "block",
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              color: "text.secondary",
-              fontSize: "1rem",
-              mb: 1,
-              mt: 3,
-              "&:first-of-type": { mt: 0 },
-            }}
-          >
-            Locked ({locked.length})
-          </Typography>
+          <SectionHeader label="Locked" count={locked.length} />
           <Box sx={gridSx}>
             {locked.map((u) => (
               <UpgradeCard
@@ -225,21 +219,7 @@ export function UpgradePanel() {
 
       {purchased.length > 0 && (
         <>
-          <Typography
-            variant="caption"
-            sx={{
-              display: "block",
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              color: "text.secondary",
-              fontSize: "1rem",
-              mb: 1,
-              mt: 3,
-              "&:first-of-type": { mt: 0 },
-            }}
-          >
-            Purchased ({purchased.length})
-          </Typography>
+          <SectionHeader label="Purchased" count={purchased.length} />
           <Box sx={gridSx}>
             {purchased.map((u) => (
               <UpgradeCard

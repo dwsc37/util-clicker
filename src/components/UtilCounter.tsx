@@ -40,7 +40,17 @@ export function UtilCounter() {
           color: "text.secondary",
         }}
       >
-        {formatUtils(state.utilsPerSecond)} utils/s
+        {formatUtils(state.utilsPerClick)} utils/s
+      </Typography>
+      <Typography
+        variant="body2"
+        sx={{
+          fontSize: "1.1rem",
+          fontStyle: "italic",
+          color: "text.secondary",
+        }}
+      >
+        {formatUtils(state.totalUtilsEarned)} total utils earned
       </Typography>
     </Paper>
   );

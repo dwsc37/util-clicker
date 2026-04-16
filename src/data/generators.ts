@@ -41,7 +41,7 @@ export const GENERATORS = [
     id: "factoryFarm",
     name: "Factory Farm",
     baseCost: 12000,
-    baseUPS: 500,
+    baseUPS: 1000,
     flavourText:
       "Sizzling bacon on my plate and cocoa in my mocha… I'm glad more people can experience the joy of a delicious meal and a full belly now.",
     icon: mosquito_net,
@@ -50,24 +50,27 @@ export const GENERATORS = [
     id: "prisonComplex",
     name: "Prison Industrial Complex",
     baseCost: 130000,
-    baseUPS: 2000,
-    flavourText: "Placeholder Flavour Text.",
+    baseUPS: 8000,
+    flavourText:
+      "Crime doesn't pay. Incarcerating it, however, pays quite nicely.",
     icon: mosquito_net,
   },
   {
     id: "childLabour",
     name: "Child Labour Agency",
     baseCost: 1400000,
-    baseUPS: 10000,
-    flavourText: "Placeholder Flavour Text.",
+    baseUPS: 60000,
+    flavourText:
+      "Small hands, low overhead, high output. For the economists, it is comparative advantage. For the children, it is just another Tuesday.",
     icon: mosquito_net,
   },
   {
     id: "experimentLab",
     name: "Human Experiment Lab",
-    baseCost: 20000000,
-    baseUPS: 30000,
-    flavourText: "Placeholder Flavour Text.",
+    baseCost: 15000000,
+    baseUPS: 400000,
+    flavourText:
+      "Every scientific breakthrough requires some guinea pigs. Ignore the bloodstains on your way in.",
     icon: mosquito_net,
   },
 ] as const;

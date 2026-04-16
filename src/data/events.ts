@@ -1,3 +1,5 @@
+import { RESEARCH_UNLOCK_THRESHOLD } from "./research";
+
 export type EventType = "message" | "qte";
 
 export type GameEventBase = {
@@ -41,36 +43,23 @@ export const EVENTS = [
     message:
       "Good. Every unit of utility generated is a net positive for the world. Keep going.",
   },
+
+  // Generators/Upgrades
   {
     id: "shop_intro",
     type: "message",
     unlockAt: 10,
     message:
-      "Manually generating utility is far too inefficient. Consider investing your utils in generators and upgrades. In the long run, it's sure to pay off.",
+      "Manually generating utility is far too inefficient. Consider investing your utils in generators and upgrades.",
   },
+
+  // Research
   {
-    id: "test_qte",
-    type: "qte",
-    unlockAt: 20,
-    message: "This is a test QTE, no further consequences involved.",
-    choices: [
-      {
-        label: "Accept",
-        consequence: {
-          id: "test_qte_response_accept",
-          type: "message",
-          message: "You accepted the test QTE.",
-        },
-      },
-      {
-        label: "Decline",
-        consequence: {
-          id: "test_qte_response_decline",
-          type: "message",
-          message: "You declined the test QTE.",
-        },
-      },
-    ],
+    id: "research_intro",
+    type: "message",
+    unlockAt: RESEARCH_UNLOCK_THRESHOLD,
+    message:
+      "Research is now available. Allocate utils towards long-term risk mitigation. While these investments provide no immediate benefit, simulations indicate a high probability of catastrophic consequences if they are left ignored.",
   },
 ] as const;
 

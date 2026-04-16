@@ -6,6 +6,7 @@ import {
   type QTEChoice,
   type QTEEvent,
 } from "../data/events";
+import { RESEARCHES, type Research } from "../data/research";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -26,6 +27,7 @@ export type GameState = {
   ownedGenerators: Record<string, number>;
   generatorEarnings: Record<string, number>;
   purchasedUpgrades: Record<string, true>;
+  purchasedResearches: Record<string, true>;
   terminalMessages: TerminalMessage[];
   triggeredEvents: Record<string, true>;
   activeMessage: TerminalMessage | null;
@@ -36,6 +38,7 @@ export type GameAction =
   | { type: "TICK"; payload: { delta: number } }
   | { type: "BUY_GENERATOR"; payload: { generatorId: string } }
   | { type: "BUY_UPGRADE"; payload: { upgradeId: string } }
+  | { type: "BUY_RESEARCH"; payload: { researchId: string } }
   | { type: "ACKNOWLEDGE_MESSAGE" }
   | { type: "RESOLVE_QTE"; payload: { choiceIndex: 0 | 1 } };
 
@@ -48,6 +51,7 @@ export const ACTIONS = {
   TICK: "TICK",
   BUY_GENERATOR: "BUY_GENERATOR",
   BUY_UPGRADE: "BUY_UPGRADE",
+  BUY_RESEARCH: "BUY_RESEARCH",
   ACKNOWLEDGE_MESSAGE: "ACKNOWLEDGE_MESSAGE",
   RESOLVE_QTE: "RESOLVE_QTE",
 } as const;
@@ -70,6 +74,7 @@ export function buildInitialState(): GameState {
     ownedGenerators,
     generatorEarnings: {},
     purchasedUpgrades: {},
+    purchasedResearches: {},
     terminalMessages: [],
     triggeredEvents: {},
     activeMessage: null,
@@ -147,18 +152,12 @@ function makeEventMessage(event: GameEvent): TerminalMessage {
   };
 }
 
-function makeGeneratorMessage(generator: Generator): TerminalMessage {
+function makePurchaseMessage(
+  purchased: Generator | Upgrade | Research,
+): TerminalMessage {
   return {
-    id: generator.id,
-    text: generator.flavourText,
-    timestamp: Date.now(),
-  };
-}
-
-function makeUpgradeMessage(upgrade: Upgrade): TerminalMessage {
-  return {
-    id: upgrade.id,
-    text: upgrade.flavourText,
+    id: purchased.id,
+    text: purchased.flavourText,
     timestamp: Date.now(),
   };
 }
@@ -194,7 +193,7 @@ function triggerMessage(state: GameState): GameState {
   for (const generator of GENERATORS) {
     if (current.terminalMessages.find((m) => m.id === generator.id)) continue;
     if (current.ownedGenerators[generator.id] === 0) continue;
-    const message = makeGeneratorMessage(generator);
+    const message = makePurchaseMessage(generator);
     current = {
       ...current,
       terminalMessages: [...current.terminalMessages, message],
@@ -205,7 +204,18 @@ function triggerMessage(state: GameState): GameState {
   for (const upgrade of UPGRADES) {
     if (current.terminalMessages.find((m) => m.id === upgrade.id)) continue;
     if (!current.purchasedUpgrades[upgrade.id]) continue;
-    const message = makeUpgradeMessage(upgrade);
+    const message = makePurchaseMessage(upgrade);
+    current = {
+      ...current,
+      terminalMessages: [...current.terminalMessages, message],
+      activeMessage: message,
+    };
+  }
+
+  for (const research of RESEARCHES) {
+    if (current.terminalMessages.find((m) => m.id === research.id)) continue;
+    if (!current.purchasedResearches[research.id]) continue;
+    const message = makePurchaseMessage(research);
     current = {
       ...current,
       terminalMessages: [...current.terminalMessages, message],
@@ -296,6 +306,27 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         utils: state.utils - upgrade.cost,
         purchasedUpgrades: newPurchased,
         utilsPerSecond: computeTotalUPS(state.ownedGenerators, newPurchased),
+      };
+
+      return triggerMessage(next);
+    }
+
+    case ACTIONS.BUY_RESEARCH: {
+      const { researchId } = action.payload;
+      const research = RESEARCHES.find((r) => r.id === researchId);
+      if (!research) return state;
+      if (state.purchasedResearches[researchId]) return state;
+      if (state.utils < research.cost) return state;
+
+      const newPurchased: Record<string, true> = {
+        ...state.purchasedResearches,
+        [researchId]: true,
+      };
+
+      const next: GameState = {
+        ...state,
+        utils: state.utils - research.cost,
+        purchasedResearches: newPurchased,
       };
 
       return triggerMessage(next);

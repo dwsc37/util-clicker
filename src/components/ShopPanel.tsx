@@ -4,15 +4,24 @@ import { GeneratorList } from "./GeneratorList";
 import { UpgradePanel } from "./UpgradePanel";
 import { useGame } from "../context/GameContext";
 import { UPGRADES } from "../data/upgrades";
+import { RESEARCHES } from "../data/research";
+import { ResearchPanel } from "./ResearchPanel";
 
 export function ShopPanel() {
-  const [tab, setTab] = useState<"generators" | "upgrades">("generators");
+  const [tab, setTab] = useState<"generators" | "upgrades" | "research">(
+    "generators",
+  );
   const { state } = useGame();
 
   const availableUpgradeCount = UPGRADES.filter((u) => {
     if (state.purchasedUpgrades[u.id]) return false;
     const owned = state.ownedGenerators[u.targetGeneratorId] ?? 0;
     return owned >= u.minOwned;
+  }).length;
+
+  const availableResearchCount = RESEARCHES.filter((r) => {
+    if (state.purchasedResearches[r.id]) return false;
+    return state.totalUtilsEarned >= r.cost;
   }).length;
 
   return (
@@ -45,9 +54,9 @@ export function ShopPanel() {
           },
         }}
       >
-        <Tab sx={{ width: "50%" }} value="generators" label="Generators" />
+        <Tab sx={{ width: "33%" }} value="generators" label="Generators" />
         <Tab
-          sx={{ width: "50%" }}
+          sx={{ width: "33%" }}
           value="upgrades"
           label={
             <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
@@ -72,6 +81,32 @@ export function ShopPanel() {
             </Box>
           }
         />
+        <Tab
+          sx={{ width: "33%" }}
+          value="research"
+          label={
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+              Research
+              {availableResearchCount > 0 && (
+                <Box
+                  sx={{
+                    mt: 0.2,
+                    bgcolor: "primary.main",
+                    color: "primary.contrastText",
+                    borderRadius: "10px",
+                    px: 0.75,
+                    py: 0.1,
+                    fontSize: "0.7rem",
+                    fontFamily: "monospace",
+                    lineHeight: 1.6,
+                  }}
+                >
+                  {availableResearchCount}
+                </Box>
+              )}
+            </Box>
+          }
+        />
       </Tabs>
 
       <Box
@@ -82,7 +117,13 @@ export function ShopPanel() {
           overflow: "hidden",
         }}
       >
-        {tab === "generators" ? <GeneratorList /> : <UpgradePanel />}
+        {tab === "generators" ? (
+          <GeneratorList />
+        ) : tab === "upgrades" ? (
+          <UpgradePanel />
+        ) : (
+          <ResearchPanel />
+        )}
       </Box>
     </Box>
   );
