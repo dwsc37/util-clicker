@@ -40,7 +40,7 @@ export function UtilCounter() {
           color: "text.secondary",
         }}
       >
-        {formatUtils(state.utilsPerClick)} utils/s
+        {formatUtils(state.utilsPerSecond)} utils/s
       </Typography>
       <Typography
         variant="body2"

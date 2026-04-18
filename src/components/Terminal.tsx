@@ -153,7 +153,7 @@ function ActiveMessageModal({ message }: { message: TerminalMessage }) {
                     letterSpacing: "0.08em",
                   }}
                 >
-                  ▲ INPUT REQUIRED (Y / N)
+                  ▲ INPUT REQUIRED
                 </Typography>
 
                 <Box sx={{ display: "flex", gap: 1 }}>
@@ -178,7 +178,7 @@ function ActiveMessageModal({ message }: { message: TerminalMessage }) {
                         },
                       }}
                     >
-                      [{i === 0 ? "Y" : "N"}] {choice.label}
+                      {choice.label}
                     </Button>
                   ))}
                 </Box>
@@ -201,7 +201,7 @@ function ActiveMessageModal({ message }: { message: TerminalMessage }) {
                     },
                   }}
                 >
-                  OK
+                  CONTINUE
                 </Button>
               </>
             )}

@@ -5,6 +5,7 @@ import {
   type GameEvent,
   type QTEChoice,
   type QTEEvent,
+  resolveMessage,
 } from "../data/events";
 import { RESEARCHES, type Research } from "../data/research";
 
@@ -17,6 +18,7 @@ export type TerminalMessage = {
   text: string;
   timestamp: number;
   qteChoices?: QTEChoice[];
+  gameEffect?: (state: GameState) => GameState;
 };
 
 export type GameState = {
@@ -135,20 +137,24 @@ export function computeTotalUPS(
 // Event and Message Handling
 // ---------------------------------------------------------------------------
 
-function makeEventMessage(event: GameEvent): TerminalMessage {
+function makeEventMessage(event: GameEvent, state: GameState): TerminalMessage {
+  const text = resolveMessage(event.message, state);
+
   if (event.type === "qte") {
     return {
       id: event.id,
-      text: event.message,
+      text,
       timestamp: Date.now(),
       qteChoices: (event as QTEEvent).choices,
+      gameEffect: event.gameEffect,
     };
   }
 
   return {
     id: event.id,
-    text: event.message,
+    text,
     timestamp: Date.now(),
+    gameEffect: event.gameEffect,
   };
 }
 
@@ -164,7 +170,10 @@ function makePurchaseMessage(
 
 function getPendingEvents(state: GameState): GameEvent[] {
   return EVENTS.filter(
-    (e) => !state.triggeredEvents[e.id] && state.totalUtilsEarned >= e.unlockAt,
+    (e) =>
+      !state.triggeredEvents[e.id] &&
+      state.totalUtilsEarned >= e.unlockAt &&
+      (e.condition ?? (() => true))(state),
   ).sort((a, b) => a.unlockAt - b.unlockAt) as GameEvent[];
 }
 
@@ -172,23 +181,6 @@ function triggerMessage(state: GameState): GameState {
   let current = state;
 
   if (current.activeMessage !== null) return current;
-
-  const pending = getPendingEvents(state);
-
-  for (const event of pending) {
-    const newTriggered: Record<string, true> = {
-      ...current.triggeredEvents,
-      [event.id]: true,
-    };
-    const message = makeEventMessage(event);
-    current = {
-      ...current,
-      terminalMessages: [...current.terminalMessages, message],
-      triggeredEvents: newTriggered,
-      activeMessage: message,
-    };
-    return current;
-  }
 
   for (const generator of GENERATORS) {
     if (current.terminalMessages.find((m) => m.id === generator.id)) continue;
@@ -199,6 +191,7 @@ function triggerMessage(state: GameState): GameState {
       terminalMessages: [...current.terminalMessages, message],
       activeMessage: message,
     };
+    return current;
   }
 
   for (const upgrade of UPGRADES) {
@@ -210,6 +203,7 @@ function triggerMessage(state: GameState): GameState {
       terminalMessages: [...current.terminalMessages, message],
       activeMessage: message,
     };
+    return current;
   }
 
   for (const research of RESEARCHES) {
@@ -221,6 +215,24 @@ function triggerMessage(state: GameState): GameState {
       terminalMessages: [...current.terminalMessages, message],
       activeMessage: message,
     };
+    return current;
+  }
+
+  const pending = getPendingEvents(state);
+
+  for (const event of pending) {
+    const newTriggered: Record<string, true> = {
+      ...current.triggeredEvents,
+      [event.id]: true,
+    };
+    const message = makeEventMessage(event, current);
+    current = {
+      ...current,
+      terminalMessages: [...current.terminalMessages, message],
+      triggeredEvents: newTriggered,
+      activeMessage: message,
+    };
+    return current;
   }
 
   return current;
@@ -333,11 +345,12 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     }
 
     case ACTIONS.ACKNOWLEDGE_MESSAGE: {
-      const next: GameState = {
-        ...state,
-        activeMessage: null,
-      };
-      return next;
+      if (!state.activeMessage) return { ...state, activeMessage: null };
+
+      const { gameEffect } = state.activeMessage;
+      const stateAfterEffect = gameEffect ? gameEffect(state) : state;
+
+      return { ...stateAfterEffect, activeMessage: null };
     }
 
     case ACTIONS.RESOLVE_QTE: {
@@ -345,15 +358,17 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       const { choiceIndex } = action.payload;
       const choice = state.activeMessage.qteChoices[choiceIndex];
 
-      const consequenceMessage = makeEventMessage(choice.consequence);
+      const consequenceMessage = makeEventMessage(choice.consequence, state);
 
-      const next: GameState = {
+      return {
         ...state,
+        triggeredEvents: {
+          ...state.triggeredEvents,
+          [choice.consequence.id]: true,
+        },
         terminalMessages: [...state.terminalMessages, consequenceMessage],
         activeMessage: consequenceMessage,
       };
-
-      return next;
     }
   }
 }

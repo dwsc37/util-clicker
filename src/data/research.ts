@@ -108,50 +108,49 @@ export const RESEARCHES: Research[] = [
     icon: mosquito_net,
   },
 
-  // Nuclear
-  {
-    id: "escalationDynamics",
-    name: "Escalation Dynamics Research",
-    researchType: "NUCLEAR",
-    cost: 5e4,
-    flavourText:
-      "The path from a limited exchange to full-scale nuclear war is poorly understood. Modelling of escalation thresholds and decision-making is foundational to any risk reduction strategy.",
-    icon: mosquito_net,
-  },
-  {
-    id: "launchSafety",
-    name: "Launch Safety Systems",
-    researchType: "NUCLEAR",
-    cost: 1e5,
-    flavourText:
-      "Hundreds of warheads stand ready to fire within minutes. Let's make sure they don't go off accidentally.",
-    icon: mosquito_net,
-  },
   {
     id: "nuclearWinterModelling",
     name: "Nuclear Winter Modelling",
     researchType: "NUCLEAR",
-    cost: 5e5,
+    cost: 5e4,
     flavourText:
-      "Most estimates of nuclear risk rely on outdated climate models. Rigorous modelling of soot dispersal, agricultural collapse, and recovery timelines gives us a clearer picture of what we are actually trying to prevent.",
+      "Modelling and understanding a post-nuclear environment is the foundation of any meaningful preparation.",
     icon: mosquito_net,
   },
   {
-    id: "survivabilityResearch",
-    name: "Fallout & Survivability Research",
+    id: "seedVaultInfrastructure",
+    name: "Seed Vault Infrastructure",
+    researchType: "NUCLEAR",
+    cost: 1e5,
+    flavourText:
+      "Crop preservation and diversity could be the difference between recovery and permanent agricultural collapse.",
+    icon: mosquito_net,
+  },
+  {
+    id: "blastShelterNetworks",
+    name: "Blast Shelter Networks",
+    researchType: "NUCLEAR",
+    cost: 5e5,
+    flavourText:
+      "Most people killed in a nuclear exchange die not from the blasts but from the aftermath. Shelter infrastructure buys time for recovery.",
+    icon: mosquito_net,
+  },
+  {
+    id: "medicalTriageProtocols",
+    name: "Mass Casualty Triage Protocols",
     researchType: "NUCLEAR",
     cost: 1e6,
     flavourText:
-      "Understanding which populations, geographies, and infrastructure systems are most resilient to nuclear effects lets us think clearly about what survival would actually require.",
+      "A post-exchange world has mass casualties and no functioning medical infrastructure. Triage research is unglamorous work that will saves lives at scale.",
     icon: mosquito_net,
   },
   {
-    id: "recoveryPathways",
-    name: "Civilisational Recovery Pathways",
+    id: "undergroundFoodProduction",
+    name: "Underground Food Production",
     researchType: "NUCLEAR",
     cost: 5e6,
     flavourText:
-      "A survivable nuclear exchange could lock humanity into a permanently reduced trajectory. Research into what institutions, knowledge bases, and resources need to be preserved or pre-positioned is key to retaining the capacity to flourish.",
+      "Fungiculture, mycoprotein and hydroponic systems housed miles below the surface. Not comfortable. But survivable. And sustainable even if the sun were to go out.",
     icon: mosquito_net,
   },
 ];
@@ -161,5 +160,5 @@ export type ResearchId = (typeof RESEARCHES)[number]["id"];
 export const RESEARCH_TYPE_LABELS: Record<ResearchType, string> = {
   AI: "AI Safety",
   PANDEMIC: "Pandemic Prevention",
-  NUCLEAR: "Nuclear Risk",
+  NUCLEAR: "Nuclear Preparation",
 };
