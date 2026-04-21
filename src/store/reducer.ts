@@ -68,8 +68,8 @@ export function buildInitialState(): GameState {
   });
 
   return {
-    utils: 1e9,
-    totalUtilsEarned: 1e9,
+    utils: 0,
+    totalUtilsEarned: 0,
     utilsPerClick: 1,
     utilsPerSecond: 0,
     ownedGenerators,
