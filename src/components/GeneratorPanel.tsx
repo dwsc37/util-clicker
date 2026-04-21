@@ -3,6 +3,7 @@ import { GENERATORS } from "../data/generators";
 import { ACTIONS, getGeneratorCost, getGeneratorUPS } from "../store/reducer";
 import { formatUtils } from "../utils/format";
 import { useGame } from "../context/GameContext";
+import lock from "../assets/lock.png";
 
 export function GeneratorList() {
   const { state, dispatch } = useGame();
@@ -89,7 +90,7 @@ export function GeneratorList() {
                 }}
               >
                 <Avatar
-                  src={isUnlocked ? gen.icon : ""}
+                  src={isUnlocked ? gen.icon : lock}
                   sx={{ width: 32, height: 32 }}
                 />
                 <Typography sx={{ fontWeight: 600, fontSize: "1rem", flex: 1 }}>

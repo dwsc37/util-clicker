@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Box, Tab, Tabs } from "@mui/material";
-import { GeneratorList } from "./GeneratorList";
+import { GeneratorList } from "./GeneratorPanel";
 import { UpgradePanel } from "./UpgradePanel";
 import { useGame } from "../context/GameContext";
 import { UPGRADES } from "../data/upgrades";

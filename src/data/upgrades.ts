@@ -5,6 +5,7 @@ import oil_palm from "../assets/oil_palm.png";
 import factory_farm from "../assets/factory_farm.png";
 import prison_complex from "../assets/prison_complex.png";
 import child_labour from "../assets/child_labour.png";
+import experiment_lab from "../assets/experiment_lab.png";
 
 export type EffectType = "UPS" | "COST";
 
@@ -182,7 +183,7 @@ export const UPGRADES = [
     minOwned: 1,
     flavourText:
       "All that red tape introduces way too much delay. Surely we don't need that here.",
-    icon: mosquito_net,
+    icon: experiment_lab,
   },
   {
     id: "poorerPopulations",
@@ -193,7 +194,7 @@ export const UPGRADES = [
     cost: 300000000,
     minOwned: 5,
     flavourText: "They need those college education scholarships!",
-    icon: mosquito_net,
+    icon: experiment_lab,
   },
 ] as const;
 

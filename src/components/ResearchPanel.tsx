@@ -9,6 +9,7 @@ import {
 import { ACTIONS } from "../store/reducer";
 import { formatUtils } from "../utils/format";
 import { useGame } from "../context/GameContext";
+import lock from "../assets/lock.png";
 
 type ResearchStatus = "available" | "locked" | "purchased";
 
@@ -69,7 +70,7 @@ function ResearchCard({
     >
       <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
         <Avatar
-          src={isUnlocked ? research.icon : ""}
+          src={isUnlocked ? research.icon : lock}
           sx={{ width: 32, height: 32 }}
         />
         <Typography sx={{ fontSize: "1rem", fontWeight: 600, flex: 1 }}>

@@ -4,6 +4,7 @@ import oil_palm from "../assets/oil_palm.png";
 import factory_farm from "../assets/factory_farm.png";
 import prison_complex from "../assets/prison_complex.png";
 import child_labour from "../assets/child_labour.png";
+import experiment_lab from "../assets/experiment_lab.png";
 
 export type Generator = {
   id: string;
@@ -76,7 +77,7 @@ export const GENERATORS = [
     baseUPS: 400000,
     flavourText:
       "Every scientific breakthrough requires some guinea pigs. Ignore the bloodstains on your way in.",
-    icon: mosquito_net,
+    icon: experiment_lab,
   },
 ] as const;
 
