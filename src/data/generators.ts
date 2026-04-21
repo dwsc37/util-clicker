@@ -58,7 +58,7 @@ export const GENERATORS = [
     baseCost: 130000,
     baseUPS: 8000,
     flavourText:
-      "Crime doesn't pay. Incarcerating it, however, pays quite nicely.",
+      "Crime doesn't pay. Incarceration, however, pays quite nicely.",
     icon: prison_complex,
   },
   {

@@ -131,7 +131,7 @@ export const UPGRADES = [
     cost: 650000,
     minOwned: 1,
     flavourText:
-      "WATER agents are securing and redirecting our non-citizen population to sustain essential workforce needs.",
+      "Wash Away The Evil Races (WATER) agents are securing and redirecting our non-citizen population to sustain essential workforce needs.",
     icon: prison_complex,
   },
   {
