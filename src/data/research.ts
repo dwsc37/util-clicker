@@ -1,4 +1,6 @@
-import mosquito_net from "../assets/mosquito_net.jpeg";
+import ai from "../assets/ai.png";
+import pandemic from "../assets/pandemic.png";
+import nuclear from "../assets/nuclear.png";
 
 export type ResearchType = "AI" | "PANDEMIC" | "NUCLEAR";
 
@@ -22,7 +24,7 @@ export const RESEARCHES: Research[] = [
     cost: 5e5,
     flavourText:
       "Misaligned superintelligence is not a science fiction scenario. Protocols give us time to get the harder problems right.",
-    icon: mosquito_net,
+    icon: ai,
   },
   {
     id: "killSwitches",
@@ -31,7 +33,7 @@ export const RESEARCHES: Research[] = [
     cost: 1e6,
     flavourText:
       "If a system begins pursuing goals we did not intend, the ability to interrupt it may be our single most valuable asset.",
-    icon: mosquito_net,
+    icon: ai,
   },
   {
     id: "aiGovernance",
@@ -40,7 +42,7 @@ export const RESEARCHES: Research[] = [
     cost: 5e6,
     flavourText:
       "Uncoordinated AI development across competing actors raises the probability that someone cuts corners at exactly the wrong moment.",
-    icon: mosquito_net,
+    icon: ai,
   },
   {
     id: "explainableAI",
@@ -49,7 +51,7 @@ export const RESEARCHES: Research[] = [
     cost: 1e7,
     flavourText:
       "A system whose reasoning we cannot inspect is a system whose misalignment we cannot detect.",
-    icon: mosquito_net,
+    icon: ai,
   },
   {
     id: "valueAlignment",
@@ -58,7 +60,7 @@ export const RESEARCHES: Research[] = [
     cost: 5e7,
     flavourText:
       "AI will optimise for what we specify, not what we intend. Ensuring those specifications reliably reflect human values is key.",
-    icon: mosquito_net,
+    icon: ai,
   },
 
   // Pandemic
@@ -69,7 +71,7 @@ export const RESEARCHES: Research[] = [
     cost: 5e5,
     flavourText:
       "Engineered pathogens represent a catastrophic risk that grows as biotechnology becomes cheaper and more accessible. Early detection is the first line of defence against a threat that could end civilisation before most people know it has begun.",
-    icon: mosquito_net,
+    icon: pandemic,
   },
   {
     id: "rapidResponseTeams",
@@ -78,7 +80,7 @@ export const RESEARCHES: Research[] = [
     cost: 1e6,
     flavourText:
       "The window in which a pandemic can be contained is measured in days. Well-equipped teams on standby is the difference between a local outbreak and a global pandemic.",
-    icon: mosquito_net,
+    icon: pandemic,
   },
   {
     id: "vaccinePlatforms",
@@ -87,7 +89,7 @@ export const RESEARCHES: Research[] = [
     cost: 5e6,
     flavourText:
       "A programmable vaccine platform collapses the time between pathogen sequencing and mass immunisation from years to weeks.",
-    icon: mosquito_net,
+    icon: pandemic,
   },
   {
     id: "globalHealthInfrastructure",
@@ -96,7 +98,7 @@ export const RESEARCHES: Research[] = [
     cost: 1e7,
     flavourText:
       "A pandemic does not respect borders. Any unmonitored reservoir is a potential source of civilisation-ending spread.",
-    icon: mosquito_net,
+    icon: pandemic,
   },
   {
     id: "pathogenEradication",
@@ -105,9 +107,10 @@ export const RESEARCHES: Research[] = [
     cost: 5e7,
     flavourText:
       "Eradicating pathogen families which pose the highest extinction risk prevents a threat from ever emerging.",
-    icon: mosquito_net,
+    icon: pandemic,
   },
 
+  // Nuclear
   {
     id: "nuclearWinterModelling",
     name: "Nuclear Winter Modelling",
@@ -115,7 +118,7 @@ export const RESEARCHES: Research[] = [
     cost: 5e5,
     flavourText:
       "Modelling and understanding a post-nuclear environment is the foundation of any meaningful preparation.",
-    icon: mosquito_net,
+    icon: nuclear,
   },
   {
     id: "seedVaultInfrastructure",
@@ -124,7 +127,7 @@ export const RESEARCHES: Research[] = [
     cost: 1e6,
     flavourText:
       "Crop preservation and diversity could be the difference between recovery and permanent agricultural collapse.",
-    icon: mosquito_net,
+    icon: nuclear,
   },
   {
     id: "blastShelterNetworks",
@@ -133,7 +136,7 @@ export const RESEARCHES: Research[] = [
     cost: 5e6,
     flavourText:
       "Most people killed in a nuclear exchange die not from the blasts but from the aftermath. Shelter infrastructure buys time for recovery.",
-    icon: mosquito_net,
+    icon: nuclear,
   },
   {
     id: "medicalTriageProtocols",
@@ -142,7 +145,7 @@ export const RESEARCHES: Research[] = [
     cost: 1e7,
     flavourText:
       "A post-exchange world has mass casualties and no functioning medical infrastructure. Triage research is unglamorous work that will saves lives at scale.",
-    icon: mosquito_net,
+    icon: nuclear,
   },
   {
     id: "undergroundFoodProduction",
@@ -151,7 +154,7 @@ export const RESEARCHES: Research[] = [
     cost: 5e7,
     flavourText:
       "Fungiculture, mycoprotein and hydroponic systems housed miles below the surface. Not comfortable. But survivable. And sustainable even if the sun were to go out.",
-    icon: mosquito_net,
+    icon: nuclear,
   },
 ];
 
