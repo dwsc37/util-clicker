@@ -4,20 +4,20 @@ export const theme = createTheme({
   palette: {
     mode: "light",
     background: {
-      default: "#f5f0e8",
-      paper: "#eee8d8",
+      default: "#f0f2f4",
+      paper: "#e4e8ec",
     },
     primary: {
-      main: "#8b1a1a",
-      light: "#c94040",
-      contrastText: "#f5f0e8",
+      main: "#007a6e",
+      light: "#00b8a6",
+      contrastText: "#f0f2f4",
     },
     text: {
-      primary: "#1a1408",
-      secondary: "#5a4e38",
-      disabled: "#b0a090",
+      primary: "#0d1214",
+      secondary: "#4a5c64",
+      disabled: "#a0b0b8",
     },
-    divider: "#c8b89a",
+    divider: "#c8ced4",
   },
   typography: {
     fontFamily: "'EB Garamond', Georgia, serif",

@@ -1,4 +1,9 @@
 import mosquito_net from "../assets/mosquito_net.jpeg";
+import soup_kitchen from "../assets/soup_kitchen.png";
+import oil_palm from "../assets/oil_palm.png";
+import factory_farm from "../assets/factory_farm.png";
+import prison_complex from "../assets/prison_complex.png";
+import child_labour from "../assets/child_labour.png";
 
 export type Generator = {
   id: string;
@@ -26,7 +31,7 @@ export const GENERATORS = [
     baseUPS: 10,
     flavourText:
       "Food is a basic human right. Even the needy and the marginalised deserve the comfort of a hot meal.",
-    icon: mosquito_net,
+    icon: soup_kitchen,
   },
   {
     id: "oilPalm",
@@ -35,7 +40,7 @@ export const GENERATORS = [
     baseUPS: 100,
     flavourText:
       "Clearing trees to grow more useful trees — a brilliant idea. Humans sure love their butter, chocolate, shampoo and more.",
-    icon: mosquito_net,
+    icon: oil_palm,
   },
   {
     id: "factoryFarm",
@@ -44,7 +49,7 @@ export const GENERATORS = [
     baseUPS: 1000,
     flavourText:
       "Sizzling bacon on my plate and cocoa in my mocha… I'm glad more people can experience the joy of a delicious meal and a full belly now.",
-    icon: mosquito_net,
+    icon: factory_farm,
   },
   {
     id: "prisonComplex",
@@ -53,7 +58,7 @@ export const GENERATORS = [
     baseUPS: 8000,
     flavourText:
       "Crime doesn't pay. Incarcerating it, however, pays quite nicely.",
-    icon: mosquito_net,
+    icon: prison_complex,
   },
   {
     id: "childLabour",
@@ -62,7 +67,7 @@ export const GENERATORS = [
     baseUPS: 60000,
     flavourText:
       "Small hands, low overhead, high output. For the economists, it is comparative advantage. For the children, it is just another Tuesday.",
-    icon: mosquito_net,
+    icon: child_labour,
   },
   {
     id: "experimentLab",

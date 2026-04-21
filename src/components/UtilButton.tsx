@@ -48,8 +48,8 @@ export function UtilButton() {
             cx="80"
             cy="80"
             r="76"
-            fill="#eee8d8"
-            stroke="#c8b89a"
+            fill="#e4e8ec"
+            stroke="#c8ced4"
             strokeWidth="1"
           />
           <circle
@@ -57,7 +57,7 @@ export function UtilButton() {
             cy="80"
             r="70"
             fill="none"
-            stroke="#8b1a1a"
+            stroke="#007a6e"
             strokeWidth="2.5"
           />
           <g
@@ -67,19 +67,19 @@ export function UtilButton() {
               transition: "transform 120ms ease-out",
             }}
           >
-            <rect x="77" y="26" width="6" height="46" rx="3" fill="#8b1a1a" />
+            <rect x="77" y="26" width="6" height="46" rx="3" fill="#007a6e" />
             <circle
               cx="80"
               cy="26"
               r="9"
-              fill="#eee8d8"
-              stroke="#8b1a1a"
+              fill="#e4e8ec"
+              stroke="#007a6e"
               strokeWidth="2"
             />
-            <circle cx="80" cy="26" r="4" fill="#8b1a1a" />
+            <circle cx="80" cy="26" r="4" fill="#007a6e" />
           </g>
-          <circle cx="80" cy="80" r="11" fill="#8b1a1a" />
-          <circle cx="80" cy="80" r="5" fill="#eee8d8" />
+          <circle cx="80" cy="80" r="11" fill="#007a6e" />
+          <circle cx="80" cy="80" r="5" fill="#e4e8ec" />
         </svg>
       </Box>
 

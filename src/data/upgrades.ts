@@ -1,5 +1,10 @@
 import type { GeneratorId } from "./generators";
 import mosquito_net from "../assets/mosquito_net.jpeg";
+import soup_kitchen from "../assets/soup_kitchen.png";
+import oil_palm from "../assets/oil_palm.png";
+import factory_farm from "../assets/factory_farm.png";
+import prison_complex from "../assets/prison_complex.png";
+import child_labour from "../assets/child_labour.png";
 
 export type EffectType = "UPS" | "COST";
 
@@ -51,7 +56,7 @@ export const UPGRADES = [
     cost: 500,
     minOwned: 1,
     flavourText: "We already pay them in exposure.",
-    icon: mosquito_net,
+    icon: soup_kitchen,
   },
   {
     id: "processedIngredients",
@@ -63,7 +68,7 @@ export const UPGRADES = [
     minOwned: 5,
     flavourText:
       "It's technically still soup. They won't notice the difference.",
-    icon: mosquito_net,
+    icon: soup_kitchen,
   },
 
   // Oil Palm Plantation
@@ -77,7 +82,7 @@ export const UPGRADES = [
     minOwned: 1,
     flavourText:
       "The yields are up. The river is a different colour. The fish are dead. These things are unrelated.",
-    icon: mosquito_net,
+    icon: oil_palm,
   },
   {
     id: "controlledBurning",
@@ -88,7 +93,7 @@ export const UPGRADES = [
     cost: 22000,
     minOwned: 5,
     flavourText: "The forest now comes down twice as fast. Burn baby burn!",
-    icon: mosquito_net,
+    icon: oil_palm,
   },
 
   // Factory Farm
@@ -101,7 +106,7 @@ export const UPGRADES = [
     cost: 60000,
     minOwned: 1,
     flavourText: "This little piggy went to the gas chamber.",
-    icon: mosquito_net,
+    icon: factory_farm,
   },
   {
     id: "dogMeat",
@@ -112,7 +117,7 @@ export const UPGRADES = [
     cost: 240000,
     minOwned: 5,
     flavourText: "Sell dog meat as pork. I heard it tastes better anyway.",
-    icon: mosquito_net,
+    icon: factory_farm,
   },
 
   // Prison Industrial Complex
@@ -126,7 +131,7 @@ export const UPGRADES = [
     minOwned: 1,
     flavourText:
       "WATER agents are securing and redirecting our non-citizen population to sustain essential workforce needs.",
-    icon: mosquito_net,
+    icon: prison_complex,
   },
   {
     id: "reducedWelfare",
@@ -138,7 +143,7 @@ export const UPGRADES = [
     minOwned: 5,
     flavourText:
       "Budget constraints have necessitated that nutritional and recreational provisions for inmates are reduced to the bare minimum.",
-    icon: mosquito_net,
+    icon: prison_complex,
   },
 
   // Child Labour Agency
@@ -151,7 +156,7 @@ export const UPGRADES = [
     cost: 7000000,
     minOwned: 1,
     flavourText: "The children yearn for the mines.",
-    icon: mosquito_net,
+    icon: child_labour,
   },
   {
     id: "inflationAdjustment",
@@ -163,7 +168,7 @@ export const UPGRADES = [
     minOwned: 5,
     flavourText:
       "Inflation is up! Do you want to pay the children less? It's not like they know anyway.",
-    icon: mosquito_net,
+    icon: child_labour,
   },
 
   // Human Experiment Lab

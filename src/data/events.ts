@@ -44,10 +44,10 @@ export function resolveMessage(
 
 // Drowning Child QTE series
 
-const DROWNING_CHILD_COST_1 = 10;
-const DROWNING_CHILD_COST_2 = 1_000;
-const DROWNING_CHILD_COST_3 = 100_000;
-const DROWNING_CHILD_COST_4 = 10_000_000;
+const DROWNING_CHILD_COST_1 = 40;
+const DROWNING_CHILD_COST_2 = 4_000;
+const DROWNING_CHILD_COST_3 = 400_000;
+const DROWNING_CHILD_COST_4 = 40_000_000;
 
 const drowningChild1: QTEEvent = {
   id: "drowning_child_1",
