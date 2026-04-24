@@ -4,17 +4,26 @@ import { useGame } from "./GameContext";
 import { ACTIONS } from "../store/reducer";
 
 type AudioContextValue = {
-  playKeyClick: () => void;
+  playKeyPress: () => void;
   playCrank: () => void;
   playClick: () => void;
 };
 
 const AudioCtx = createContext<AudioContextValue | null>(null);
 
-type SoundName = "keyclick" | "crank" | "click";
+type SoundName =
+  | "keyPress1"
+  | "keyPress2"
+  | "keyPress3"
+  | "keyPress4"
+  | "crank"
+  | "click";
 
 const SOUND_FILES: Record<SoundName, string> = {
-  keyclick: "/sounds/keyclick.wav",
+  keyPress1: "/sounds/key-press-1.wav",
+  keyPress2: "/sounds/key-press-2.wav",
+  keyPress3: "/sounds/key-press-3.wav",
+  keyPress4: "/sounds/key-press-4.wav",
   crank: "/sounds/crank.wav",
   click: "/sounds/click.wav",
 };
@@ -98,8 +107,8 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     source.start();
   }
 
-  function playKeyClick() {
-    play("keyclick", 0.1, 0.8 + Math.random() * 1);
+  function playKeyPress() {
+    play(("keyPress" + Math.floor(Math.random() * 4)) as SoundName, 0.2);
   }
 
   function playCrank() {
@@ -111,7 +120,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <AudioCtx.Provider value={{ playKeyClick, playCrank, playClick }}>
+    <AudioCtx.Provider value={{ playKeyPress, playCrank, playClick }}>
       {!started && (
         <Box
           onClick={handleStart}

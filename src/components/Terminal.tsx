@@ -9,7 +9,7 @@ function useTypewriter(text: string, tickInterval = 25) {
   const [finished, setFinished] = useState(false);
   const indexRef = useRef(0);
 
-  const { playKeyClick } = useAudio();
+  const { playKeyPress } = useAudio();
   useEffect(() => {
     setDisplayed("");
     indexRef.current = 0;
@@ -18,8 +18,8 @@ function useTypewriter(text: string, tickInterval = 25) {
       indexRef.current += 1;
       setDisplayed(text.slice(0, indexRef.current));
 
-      if (indexRef.current > 3 && indexRef.current % 3 === 0) {
-        playKeyClick();
+      if (indexRef.current % 3 === 0) {
+        playKeyPress();
       }
       if (indexRef.current >= text.length) {
         clearInterval(id);
