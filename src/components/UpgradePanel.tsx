@@ -5,6 +5,7 @@ import { ACTIONS } from "../store/reducer";
 import { formatUtils } from "../utils/format";
 import { useGame } from "../context/GameContext";
 import lock from "../assets/lock.png";
+import { useAudio } from "../context/AudioContext";
 
 type UpgradeStatus = "available" | "locked" | "purchased";
 
@@ -149,8 +150,10 @@ function SectionHeader({ label, count }: { label: string; count: number }) {
 export function UpgradePanel() {
   const { state, dispatch } = useGame();
   const { utils, ownedGenerators, purchasedUpgrades } = state;
+  const { playClick } = useAudio();
 
   function handleBuy(upgradeId: string) {
+    playClick();
     dispatch({ type: ACTIONS.BUY_UPGRADE, payload: { upgradeId } });
   }
 

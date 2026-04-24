@@ -4,11 +4,13 @@ import { ACTIONS, getGeneratorCost, getGeneratorUPS } from "../store/reducer";
 import { formatUtils } from "../utils/format";
 import { useGame } from "../context/GameContext";
 import lock from "../assets/lock.png";
+import { useAudio } from "../context/AudioContext";
 
 export function GeneratorList() {
   const { state, dispatch } = useGame();
-
+  const { playClick } = useAudio();
   function handleBuy(generatorId: string) {
+    playClick();
     dispatch({ type: ACTIONS.BUY_GENERATOR, payload: { generatorId } });
   }
 

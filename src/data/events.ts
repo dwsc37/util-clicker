@@ -282,9 +282,6 @@ const researchPenaltyNuclear: MessageEvent = {
   },
 };
 
-// Generator Ethical Dilemma QTEs
-// TO BE ADDED
-
 export const EVENTS: GameEvent[] = [
   // Intro
   {
@@ -330,6 +327,4 @@ export const EVENTS: GameEvent[] = [
   researchPenaltyAI,
   researchPenaltyPandemic,
   researchPenaltyNuclear,
-
-  // Generator dilemmas
 ];

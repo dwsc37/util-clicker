@@ -7,43 +7,46 @@ import { UtilCounter } from "./components/UtilCounter";
 import { UtilButton } from "./components/UtilButton";
 import { ShopPanel } from "./components/ShopPanel";
 import { Terminal } from "./components/Terminal";
+import { AudioProvider } from "./context/AudioContext";
 
 export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <GameProvider>
-        <Box
-          sx={{
-            px: 3,
-            display: "flex",
-            flexDirection: "column",
-            height: "100vh",
-            pb: 3,
-          }}
-        >
-          <Header />
-
+        <AudioProvider>
           <Box
             sx={{
-              display: "grid",
-              gridTemplateColumns: "290px 500px 1fr",
-              gap: 2.5,
-              alignItems: "start",
-              flexGrow: 1,
-              overflow: "hidden",
+              px: 3,
+              display: "flex",
+              flexDirection: "column",
+              height: "100vh",
+              pb: 3,
             }}
           >
-            <Box>
-              <UtilCounter />
-              <UtilButton />
+            <Header />
+
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: "290px 500px 1fr",
+                gap: 2.5,
+                alignItems: "start",
+                flexGrow: 1,
+                overflow: "hidden",
+              }}
+            >
+              <Box>
+                <UtilCounter />
+                <UtilButton />
+              </Box>
+
+              <Terminal />
+
+              <ShopPanel />
             </Box>
-
-            <Terminal />
-
-            <ShopPanel />
           </Box>
-        </Box>
+        </AudioProvider>
       </GameProvider>
     </ThemeProvider>
   );

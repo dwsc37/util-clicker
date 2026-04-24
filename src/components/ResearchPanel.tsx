@@ -10,6 +10,7 @@ import { ACTIONS } from "../store/reducer";
 import { formatUtils } from "../utils/format";
 import { useGame } from "../context/GameContext";
 import lock from "../assets/lock.png";
+import { useAudio } from "../context/AudioContext";
 
 type ResearchStatus = "available" | "locked" | "purchased";
 
@@ -134,8 +135,10 @@ function SectionHeader({ label, count }: { label: string; count: number }) {
 export function ResearchPanel() {
   const { state, dispatch } = useGame();
   const { utils, totalUtilsEarned, purchasedResearches } = state;
+  const { playClick } = useAudio();
 
   function handleBuy(researchId: string) {
+    playClick();
     dispatch({ type: ACTIONS.BUY_RESEARCH, payload: { researchId } });
   }
 

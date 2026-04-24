@@ -6,12 +6,14 @@ import { useGame } from "../context/GameContext";
 import { UPGRADES } from "../data/upgrades";
 import { RESEARCHES } from "../data/research";
 import { ResearchPanel } from "./ResearchPanel";
+import { useAudio } from "../context/AudioContext";
 
 export function ShopPanel() {
   const [tab, setTab] = useState<"generators" | "upgrades" | "research">(
     "generators",
   );
   const { state } = useGame();
+  const { playClick } = useAudio();
 
   const availableUpgradeCount = UPGRADES.filter((u) => {
     if (state.purchasedUpgrades[u.id]) return false;
@@ -39,7 +41,10 @@ export function ShopPanel() {
     >
       <Tabs
         value={tab}
-        onChange={(_, v) => setTab(v)}
+        onChange={(_, v) => {
+          playClick();
+          setTab(v);
+        }}
         sx={{
           borderBottom: "1px solid",
           borderColor: "divider",

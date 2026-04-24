@@ -21,12 +21,6 @@ export const theme = createTheme({
   },
   typography: {
     fontFamily: "'Barlow Condensed', sans-serif",
-    h1: {
-      fontFamily: "'Barlow Condensed', sans-serif",
-      fontWeight: 500,
-      letterSpacing: "0.25em",
-      textTransform: "uppercase",
-    },
     overline: {
       fontFamily: "'Share Tech Mono', monospace",
       letterSpacing: "0.2em",

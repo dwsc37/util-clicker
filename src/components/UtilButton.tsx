@@ -3,13 +3,16 @@ import { Box, Typography } from "@mui/material";
 import { ACTIONS } from "../store/reducer";
 import { useGame } from "../context/GameContext";
 import { formatUtils } from "../utils/format";
+import { useAudio } from "../context/AudioContext";
 
 export function UtilButton() {
   const { state, dispatch } = useGame();
   const angleRef = useRef(0);
   const crankRef = useRef<SVGGElement>(null);
+  const { playCrank } = useAudio();
 
   function handleClick() {
+    playCrank();
     dispatch({ type: ACTIONS.CLICK });
     angleRef.current += 45;
     if (crankRef.current) {

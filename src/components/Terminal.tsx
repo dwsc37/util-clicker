@@ -2,12 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import { Box, Typography, Button } from "@mui/material";
 import { useGame } from "../context/GameContext";
 import { ACTIONS, type TerminalMessage } from "../store/reducer";
+import { useAudio } from "../context/AudioContext";
 
 function useTypewriter(text: string, tickInterval = 25) {
   const [displayed, setDisplayed] = useState("");
   const [finished, setFinished] = useState(false);
   const indexRef = useRef(0);
 
+  const { playKeyClick } = useAudio();
   useEffect(() => {
     setDisplayed("");
     indexRef.current = 0;
@@ -16,6 +18,9 @@ function useTypewriter(text: string, tickInterval = 25) {
       indexRef.current += 1;
       setDisplayed(text.slice(0, indexRef.current));
 
+      if (indexRef.current > 5 && indexRef.current % 5 === 0) {
+        playKeyClick();
+      }
       if (indexRef.current >= text.length) {
         clearInterval(id);
         setFinished(true);
@@ -33,6 +38,7 @@ function ActiveMessageModal({ message }: { message: TerminalMessage }) {
   const { displayed, finished } = useTypewriter(message.text);
   const isQTE = !!message.qteChoices;
   const [timeLeft, setTimeLeft] = useState(20);
+  const { playClick } = useAudio();
 
   useEffect(() => {
     if (!isQTE || !finished) return;
@@ -56,10 +62,12 @@ function ActiveMessageModal({ message }: { message: TerminalMessage }) {
   }, [message.id]);
 
   function handleAcknowledge() {
+    playClick();
     dispatch({ type: ACTIONS.ACKNOWLEDGE_MESSAGE });
   }
 
   function handleResolve(choiceIndex: 0 | 1) {
+    playClick();
     dispatch({ type: ACTIONS.RESOLVE_QTE, payload: { choiceIndex } });
   }
 
@@ -389,11 +397,6 @@ export function Terminal() {
             color: "#3fb950",
             fontSize: "0.75rem",
             fontFamily: "monospace",
-            animation: "blink 2s step-end infinite",
-            "@keyframes blink": {
-              "0%, 100%": { opacity: 1 },
-              "50%": { opacity: 0.75 },
-            },
           }}
         >
           ▶
