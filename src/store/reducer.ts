@@ -21,6 +21,7 @@ export type TerminalMessage = {
 };
 
 export type GameState = {
+  gameStarted: boolean;
   utils: number;
   totalUtilsEarned: number;
   utilsPerClick: number;
@@ -35,6 +36,7 @@ export type GameState = {
 };
 
 export type GameAction =
+  | { type: "START" }
   | { type: "CLICK" }
   | { type: "TICK"; payload: { delta: number } }
   | { type: "BUY_GENERATOR"; payload: { generatorId: string } }
@@ -48,6 +50,7 @@ export type GameAction =
 // ---------------------------------------------------------------------------
 
 export const ACTIONS = {
+  START: "START",
   CLICK: "CLICK",
   TICK: "TICK",
   BUY_GENERATOR: "BUY_GENERATOR",
@@ -68,6 +71,7 @@ export function buildInitialState(): GameState {
   });
 
   return {
+    gameStarted: false,
     utils: 0,
     totalUtilsEarned: 0,
     utilsPerClick: 1,
@@ -244,7 +248,16 @@ function triggerMessage(state: GameState): GameState {
 // ---------------------------------------------------------------------------
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
+  if (!state.gameStarted && action.type !== ACTIONS.START) {
+    return state;
+  }
   switch (action.type) {
+    case ACTIONS.START: {
+      return {
+        ...state,
+        gameStarted: true,
+      };
+    }
     case ACTIONS.CLICK: {
       const gained = state.utilsPerClick;
       const next: GameState = {

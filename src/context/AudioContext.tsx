@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { Box, Typography } from "@mui/material";
+import { useGame } from "./GameContext";
+import { ACTIONS } from "../store/reducer";
 
 type AudioContextValue = {
   playKeyClick: () => void;
@@ -23,6 +25,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   const buffersRef = useRef<Partial<Record<SoundName, AudioBuffer>>>({});
   const musicRef = useRef<HTMLAudioElement | null>(null);
   const [started, setStarted] = useState(false);
+  const { dispatch } = useGame();
 
   useEffect(() => {
     const audio = new Audio("/sounds/background.mp3");
@@ -73,6 +76,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     ).then(() => {
       musicRef.current?.play();
       setStarted(true);
+      dispatch({ type: ACTIONS.START });
     });
   }
 
@@ -106,54 +110,51 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     play("click", 0.3);
   }
 
-  if (!started) {
-    return (
-      <Box
-        onClick={handleStart}
-        sx={{
-          position: "fixed",
-          inset: 0,
-          bgcolor: "#0d1117",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          cursor: "pointer",
-          zIndex: 9999,
-          gap: 2,
-        }}
-      >
-        <Typography
-          sx={{
-            fontFamily: "monospace",
-            color: "#e6edf3",
-            fontSize: "2rem",
-            letterSpacing: "0.4em",
-            fontWeight: "bold",
-          }}
-        >
-          UTIL
-          <Box component="span" sx={{ color: "#3fb950" }}>
-            CLICKER
-          </Box>
-        </Typography>
-
-        <Typography
-          sx={{
-            fontFamily: "monospace",
-            color: "#3fb950",
-            fontSize: "0.9rem",
-            letterSpacing: "0.3em",
-          }}
-        >
-          ▶ CLICK TO START
-        </Typography>
-      </Box>
-    );
-  }
-
   return (
     <AudioCtx.Provider value={{ playKeyClick, playCrank, playClick }}>
+      {!started && (
+        <Box
+          onClick={handleStart}
+          sx={{
+            position: "fixed",
+            inset: 0,
+            bgcolor: "#0d1117",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            zIndex: 9999,
+            gap: 2,
+          }}
+        >
+          <Typography
+            sx={{
+              fontFamily: "monospace",
+              color: "#e6edf3",
+              fontSize: "2rem",
+              letterSpacing: "0.4em",
+              fontWeight: "bold",
+            }}
+          >
+            UTIL
+            <Box component="span" sx={{ color: "#3fb950" }}>
+              CLICKER
+            </Box>
+          </Typography>
+
+          <Typography
+            sx={{
+              fontFamily: "monospace",
+              color: "#3fb950",
+              fontSize: "0.9rem",
+              letterSpacing: "0.3em",
+            }}
+          >
+            ▶ CLICK TO START
+          </Typography>
+        </Box>
+      )}
       {children}
     </AudioCtx.Provider>
   );
