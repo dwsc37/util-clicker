@@ -1,6 +1,7 @@
 const numberNotation = ["K", "M", "B", "T", "Q", "Qi"];
 
 export function formatUtils(n: number): string {
+  if (n < 0) return "-" + formatUtils(-n);
   if (n < 1_000) return n.toFixed(0);
   const exponent = Math.min(
     Math.floor(Math.log10(n) / 3),

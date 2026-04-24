@@ -4,40 +4,43 @@ export const theme = createTheme({
   palette: {
     mode: "light",
     background: {
-      default: "#f5f0e8",
-      paper: "#eee8d8",
+      default: "#b8bfc8",
+      paper: "#d0d5dc",
     },
     primary: {
-      main: "#8b1a1a",
-      light: "#c94040",
-      contrastText: "#f5f0e8",
+      main: "#3a4a3a",
+      light: "#4e6b4e",
+      contrastText: "#e8ede8",
     },
     text: {
-      primary: "#1a1408",
-      secondary: "#5a4e38",
-      disabled: "#b0a090",
+      primary: "#1a1e1a",
+      secondary: "#3a3f3a",
+      disabled: "#7a8a7a",
     },
-    divider: "#c8b89a",
+    divider: "#9aa0a8",
   },
   typography: {
-    fontFamily: "'EB Garamond', Georgia, serif",
+    fontFamily: "'Barlow Condensed', sans-serif",
     h1: {
-      fontFamily: "'Playfair Display', Georgia, serif",
-      fontWeight: 700,
-      letterSpacing: "0.15em",
+      fontFamily: "'Barlow Condensed', sans-serif",
+      fontWeight: 500,
+      letterSpacing: "0.25em",
       textTransform: "uppercase",
     },
-    h2: {
-      fontFamily: "'Playfair Display', Georgia, serif",
-      fontWeight: 500,
-    },
     overline: {
-      fontFamily: "'EB Garamond', Georgia, serif",
+      fontFamily: "'Share Tech Mono', monospace",
       letterSpacing: "0.2em",
+      textTransform: "uppercase",
     },
     caption: {
-      fontFamily: "'Playfair Display', serif",
+      fontFamily: "'Barlow Condensed', sans-serif",
       fontWeight: 400,
+    },
+    body1: {
+      fontFamily: "'Share Tech Mono', monospace",
+    },
+    body2: {
+      fontFamily: "'Share Tech Mono', monospace",
     },
   },
 });

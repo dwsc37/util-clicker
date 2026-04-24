@@ -72,8 +72,8 @@ export function GeneratorList() {
                 textAlign: "left",
                 "&:hover": canAfford
                   ? {
-                      bgcolor: "#f5e8e8",
-                      boxShadow: "0 2px 8px rgba(26,20,8,0.12)",
+                      bgcolor: "#c8d4c8",
+                      boxShadow: "0 2px 8px rgba(26,31,26,0.15)",
                     }
                   : {},
               }}
@@ -98,7 +98,6 @@ export function GeneratorList() {
                 </Typography>
                 <Typography
                   sx={{
-                    fontFamily: "'Playfair Display', serif",
                     fontSize: "1.5rem",
                     color: "primary.main",
                     lineHeight: 1,
@@ -126,11 +125,11 @@ export function GeneratorList() {
               >
                 <StatRow label="cost" value={`${formatUtils(cost)} utils`} />
                 <StatRow
-                  label="each"
+                  label="each producing"
                   value={`${formatUtils(upsEach)} utils/s`}
                 />
                 <StatRow
-                  label="total"
+                  label="total production"
                   value={`${formatUtils(upsTotal)} utils/s`}
                 />
                 <StatRow

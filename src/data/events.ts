@@ -44,10 +44,10 @@ export function resolveMessage(
 
 // Drowning Child QTE series
 
-const DROWNING_CHILD_COST_1 = 40;
-const DROWNING_CHILD_COST_2 = 4_000;
-const DROWNING_CHILD_COST_3 = 400_000;
-const DROWNING_CHILD_COST_4 = 40_000_000;
+const DROWNING_CHILD_COST_1 = 30;
+const DROWNING_CHILD_COST_2 = 3_000;
+const DROWNING_CHILD_COST_3 = 300_000;
+const DROWNING_CHILD_COST_4 = 30_000_000;
 
 const drowningChild1: QTEEvent = {
   id: "drowning_child_1",
@@ -196,8 +196,8 @@ function countResearchByType(state: GameState, type: ResearchType): number {
 // AI: percentage of utils lost
 const AI_PENALTIES = [0.95, 0.75, 0.55, 0.35, 0.15, 0];
 // Pandemic/Nuclear: fraction of each generator count lost
-const PANDEMIC_PENALTIES = [0.95, 0.75, 0.55, 0.35, 0.15, 0];
-const NUCLEAR_PENALTIES = [0.95, 0.75, 0.55, 0.35, 0.15, 0];
+const PANDEMIC_PENALTIES = [0.9, 0.7, 0.5, 0.3, 0.1, 0];
+const NUCLEAR_PENALTIES = [0.9, 0.7, 0.5, 0.3, 0.1, 0];
 
 function applyGeneratorPenalty(state: GameState, fraction: number): GameState {
   const newOwned: Record<string, number> = {};
@@ -214,12 +214,12 @@ const researchPenaltyAI: MessageEvent = {
   message: (state: GameState) => {
     const count = countResearchByType(state, "AI");
     const msgs = [
-      "SYSTEM ALERT: A rogue AI achieved broad access to networked infrastructure. By the time it was manually terminated, it had siphoned 95% of your liquid utils. Your AI safety research investment: zero.",
-      "SYSTEM ALERT: A rogue AI infiltrated networked infrastructure. Your minimal safety investment slowed detection but could not prevent significant damage. 75% of your utils were siphoned before containment.",
+      "SYSTEM EMERGENCY: A rogue AI achieved broad access to networked infrastructure. By the time it was manually terminated, it had siphoned 95% of your liquid utils. Your AI safety research investment: zero.",
+      "SYSTEM EMERGENCY: A rogue AI infiltrated networked infrastructure. Your minimal safety investment slowed detection but could not prevent significant damage. 75% of your utils were siphoned before containment.",
       "SYSTEM ALERT: A rogue AI achieved partial access to networked infrastructure. Your safety systems eventually contained it. 55% of utils were lost in the window before termination.",
       "SYSTEM ALERT: A rogue AI was detected and contained before reaching critical infrastructure. 35% of utils were siphoned before termination. Your research worked — not perfectly, but well enough.",
-      "SYSTEM ALERT: Your AI safety systems flagged and isolated a rogue AI before it could cause significant damage. 15% of utils were lost in the brief window before containment.",
-      "SYSTEM ALERT: An infiltration attempt by a rogue AI was detected and terminated within minutes. Your AI safety research meant the process never reached a stage where it could cause meaningful harm. 5% of utils lost.",
+      "SYSTEM NOTICE: Your AI safety systems flagged and isolated a rogue AI before it could cause significant damage. 15% of utils were lost in the brief window before containment.",
+      "SYSTEM NOTICE: An infiltration attempt by a rogue AI was detected and terminated within minutes. Your AI safety research meant the process never reached a stage where it could cause meaningful harm. 5% of utils lost.",
     ];
     return msgs[Math.min(count, msgs.length - 1)];
   },
@@ -261,12 +261,12 @@ const researchPenaltyNuclear: MessageEvent = {
   message: (state: GameState) => {
     const count = countResearchByType(state, "NUCLEAR");
     const msgs = [
-      "NUCLEAR EVENT: A limited nuclear exchange has occurred. Your nuclear prepartion research investment: zero. A nuclear winter has crippled your operations. 95% of your physical infrastructure is offline.",
-      "NUCLEAR EVENT: A limited nuclear exchange has occurred. Your nuclear preparation research investment provided little benefit. Nuclear winter conditions are developing. 75% of your generators are offline.",
-      "NUCLEAR EVENT: A limited nuclear exchange has occurred. Some nuclear prepation research investment was in place. It is not enough, but it is something. 55% of your generators are offline.",
-      "NUCLEAR EVENT: A limited nuclear exchange has occurred. Your nuclear prepartion research investment has paid off. Seed vaults are being accessed, shelter networks are providing refuge. 35% of your generators are offline.",
-      "NUCLEAR EVENT: A limited nuclear exchange has occurred. Your investment in nuclear preparation research has significantly reduced the impact. Food production has been partially maintained. 15% of your generators are offline.",
-      "NUCLEAR EVENT: A limited nuclear exchange has occurred. Your comprehensive nuclear preparation research has positioned your operation to weather the aftermath. 5% of generators offline in directly affected zones. You prepared for the worst. It arrived.",
+      "NUCLEAR EMERGENCY: A limited nuclear exchange has occurred. Your nuclear prepartion research investment: zero. A nuclear winter has crippled your operations. 95% of your physical infrastructure is offline.",
+      "NUCLEAR EMERGENCY: A limited nuclear exchange has occurred. Your nuclear preparation research investment provided little benefit. Nuclear winter conditions are developing. 75% of your generators are offline.",
+      "NUCLEAR ALERT: A limited nuclear exchange has occurred. Some nuclear prepation research investment was in place. It is not enough, but it is something. 55% of your generators are offline.",
+      "NUCLEAR ALERT: A limited nuclear exchange has occurred. Your nuclear prepartion research investment has paid off. Seed vaults are being accessed, shelter networks are providing refuge. 35% of your generators are offline.",
+      "NUCLEAR NOTICE: A limited nuclear exchange has occurred. Your investment in nuclear preparation research has significantly reduced the impact. Food production has been partially maintained. 15% of your generators are offline.",
+      "NUCLEAR NOTICE: A limited nuclear exchange has occurred. Your comprehensive nuclear preparation research has positioned your operation to weather the aftermath. 5% of generators offline in directly affected zones. You prepared for the worst. It arrived.",
     ];
     return msgs[Math.min(count, msgs.length - 1)];
   },

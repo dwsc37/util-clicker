@@ -18,7 +18,6 @@ export function UtilCounter() {
       <Box sx={{ display: "flex", alignItems: "baseline", gap: 1, mb: 0.5 }}>
         <Typography
           sx={{
-            fontFamily: "'Playfair Display', serif",
             fontSize: "2.8rem",
             fontWeight: 700,
             color: "primary.main",
@@ -45,7 +44,7 @@ export function UtilCounter() {
       <Typography
         variant="body2"
         sx={{
-          fontSize: "1.1rem",
+          fontSize: "1rem",
           fontStyle: "italic",
           color: "text.secondary",
         }}

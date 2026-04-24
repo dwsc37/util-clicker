@@ -65,8 +65,8 @@ function UpgradeCard({
         textAlign: "left",
         "&:hover": canAfford
           ? {
-              bgcolor: "#f5e8e8",
-              boxShadow: "0 2px 8px rgba(26,20,8,0.12)",
+              bgcolor: "#c8d4c8",
+              boxShadow: "0 2px 8px rgba(26,31,26,0.15)",
             }
           : {},
       }}
