@@ -18,7 +18,7 @@ function useTypewriter(text: string, tickInterval = 25) {
       indexRef.current += 1;
       setDisplayed(text.slice(0, indexRef.current));
 
-      if (indexRef.current > 5 && indexRef.current % 5 === 0) {
+      if (indexRef.current > 3 && indexRef.current % 3 === 0) {
         playKeyClick();
       }
       if (indexRef.current >= text.length) {
