@@ -60,10 +60,10 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         ),
       );
     }
-    getCtx();
-    loadAll();
-    musicRef.current?.play();
-    setStarted(true);
+    loadAll().then(() => {
+      musicRef.current?.play();
+      setStarted(true);
+    });
   }
 
   function play(name: SoundName, volume: number, playbackRate: number = 1) {
