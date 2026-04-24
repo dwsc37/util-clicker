@@ -26,7 +26,7 @@ export function UtilCounter() {
         >
           {formatUtils(state.utils)}
         </Typography>
-        <Typography variant="overline" sx={{ fontSize: "0.9rem" }}>
+        <Typography variant="overline" sx={{ fontSize: "1.2rem" }}>
           utils
         </Typography>
       </Box>
@@ -44,7 +44,7 @@ export function UtilCounter() {
       <Typography
         variant="body2"
         sx={{
-          fontSize: "1rem",
+          fontSize: "1.1rem",
           fontStyle: "italic",
           color: "text.secondary",
         }}

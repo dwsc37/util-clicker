@@ -10,7 +10,6 @@ function useTypewriter(text: string, tickInterval = 25) {
 
   useEffect(() => {
     setDisplayed("");
-    setFinished(false);
     indexRef.current = 0;
 
     const id = setInterval(() => {
@@ -29,13 +28,32 @@ function useTypewriter(text: string, tickInterval = 25) {
   return { displayed, finished };
 }
 
-// ---------------------------------------------------------------------------
-// Modal
-// ---------------------------------------------------------------------------
 function ActiveMessageModal({ message }: { message: TerminalMessage }) {
   const { dispatch } = useGame();
   const { displayed, finished } = useTypewriter(message.text);
   const isQTE = !!message.qteChoices;
+  const [timeLeft, setTimeLeft] = useState(20);
+
+  useEffect(() => {
+    if (!isQTE || !finished) return;
+
+    const id = setInterval(() => {
+      setTimeLeft((t) => {
+        if (t <= 0.1) {
+          clearInterval(id);
+          dispatch({ type: ACTIONS.RESOLVE_QTE, payload: { choiceIndex: 1 } });
+          return 0;
+        }
+        return t - 0.1;
+      });
+    }, 100);
+
+    return () => clearInterval(id);
+  }, [isQTE, finished, timeLeft]);
+
+  useEffect(() => {
+    setTimeLeft(20);
+  }, [message.id]);
 
   function handleAcknowledge() {
     dispatch({ type: ACTIONS.ACKNOWLEDGE_MESSAGE });
@@ -45,15 +63,19 @@ function ActiveMessageModal({ message }: { message: TerminalMessage }) {
     dispatch({ type: ACTIONS.RESOLVE_QTE, payload: { choiceIndex } });
   }
 
+  const borderColor = isQTE
+    ? "#e3b341"
+    : /^\w+ (Alert|Notice|Emergency):/i.test(message.text)
+      ? "#f85149"
+      : "#3fb950";
+
   return (
     <Box
       sx={{
         position: "absolute",
         inset: 0,
-
         bgcolor: "rgba(0,0,0,0.75)",
         backdropFilter: "blur(0.5px)",
-
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -65,16 +87,13 @@ function ActiveMessageModal({ message }: { message: TerminalMessage }) {
         sx={{
           width: "90%",
           bgcolor: "#0d1117",
-
           border: "1px solid",
-          borderColor: isQTE ? "#e3b341" : "#3fb950",
-
+          borderColor: borderColor,
           borderRadius: 2,
           p: 3,
           display: "flex",
           flexDirection: "column",
           gap: 2,
-
           animation: "modalIn 180ms ease-out",
           "@keyframes modalIn": {
             from: { opacity: 0, transform: "scale(0.96)" },
@@ -144,17 +163,57 @@ function ActiveMessageModal({ message }: { message: TerminalMessage }) {
           >
             {isQTE ? (
               <>
-                <Typography
+                <Box
                   sx={{
-                    fontFamily: "monospace",
-                    fontSize: "0.7rem",
-                    color: "#e3b341",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
                     mb: 1.5,
-                    letterSpacing: "0.08em",
                   }}
                 >
-                  ▲ INPUT REQUIRED
-                </Typography>
+                  <Typography
+                    sx={{
+                      fontFamily: "monospace",
+                      fontSize: "0.7rem",
+                      color: "#e3b341",
+                      letterSpacing: "0.08em",
+                    }}
+                  >
+                    ▲ INPUT REQUIRED
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontFamily: "monospace",
+                      fontSize: "0.7rem",
+                      color: timeLeft <= 10 ? "#f85149" : "#8b949e",
+                      letterSpacing: "0.08em",
+                      transition: "color 0.3s",
+                    }}
+                  >
+                    {timeLeft.toFixed(1)}s
+                  </Typography>
+                </Box>
+
+                <Box
+                  sx={{
+                    width: "100%",
+                    height: "2px",
+                    bgcolor: "#21262d",
+                    borderRadius: "1px",
+                    mb: 1.5,
+                    overflow: "hidden",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      height: "100%",
+                      width: `${(timeLeft / 20) * 100}%`,
+                      bgcolor: timeLeft <= 10 ? "#f85149" : "#e3b341",
+                      borderRadius: "1px",
+                      transition: "width 1s linear, background-color 0.3s",
+                    }}
+                  />
+                </Box>
 
                 <Box sx={{ display: "flex", gap: 1 }}>
                   {message.qteChoices!.map((choice, i) => (
@@ -184,26 +243,22 @@ function ActiveMessageModal({ message }: { message: TerminalMessage }) {
                 </Box>
               </>
             ) : (
-              <>
-                <Button
-                  onClick={handleAcknowledge}
-                  sx={{
-                    fontFamily: "monospace",
-                    fontSize: "0.85rem",
-                    color: "#3fb950",
-                    border: "0.5px solid",
-                    borderColor: "#3fb950",
-                    borderRadius: "2px",
-                    px: 2,
-                    py: 0.6,
-                    "&:hover": {
-                      bgcolor: "rgba(63,185,80,0.1)",
-                    },
-                  }}
-                >
-                  CONTINUE
-                </Button>
-              </>
+              <Button
+                onClick={handleAcknowledge}
+                sx={{
+                  fontFamily: "monospace",
+                  fontSize: "0.85rem",
+                  color: "#3fb950",
+                  border: "0.5px solid",
+                  borderColor: "#3fb950",
+                  borderRadius: "2px",
+                  px: 2,
+                  py: 0.6,
+                  "&:hover": { bgcolor: "rgba(63,185,80,0.1)" },
+                }}
+              >
+                CONTINUE
+              </Button>
             )}
           </Box>
         )}

@@ -100,7 +100,7 @@ export function UtilButton() {
           fontSize: "1rem",
         }}
       >
-        {formatUtils(state.utilsPerClick)} util per click
+        {formatUtils(state.utilsPerClick)} utils per click
       </Typography>
     </Box>
   );

@@ -226,7 +226,11 @@ const researchPenaltyAI: MessageEvent = {
   gameEffect: (state: GameState) => {
     const count = countResearchByType(state, "AI");
     const penalty = AI_PENALTIES[Math.min(count, AI_PENALTIES.length - 1)];
-    return { ...state, utils: Math.floor(state.utils * (1 - penalty)) };
+    return {
+      ...state,
+      utils:
+        state.utils > 0 ? Math.floor(state.utils * (1 - penalty)) : state.utils,
+    };
   },
 };
 

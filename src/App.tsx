@@ -27,7 +27,7 @@ export default function App() {
           <Box
             sx={{
               display: "grid",
-              gridTemplateColumns: "260px 500px 1fr",
+              gridTemplateColumns: "290px 500px 1fr",
               gap: 2.5,
               alignItems: "start",
               flexGrow: 1,
