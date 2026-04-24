@@ -19,6 +19,7 @@ const SOUND_FILES: Record<SoundName, string> = {
 
 export function AudioProvider({ children }: { children: React.ReactNode }) {
   const ctxRef = useRef<AudioContext | null>(null);
+  const rawBuffersRef = useRef<Partial<Record<SoundName, ArrayBuffer>>>({});
   const buffersRef = useRef<Partial<Record<SoundName, AudioBuffer>>>({});
   const musicRef = useRef<HTMLAudioElement | null>(null);
   const [started, setStarted] = useState(false);
@@ -39,20 +40,18 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     return ctxRef.current;
   }
 
-  function handleStart() {
-    async function loadAll() {
-      const ctx = getCtx();
+  useEffect(() => {
+    async function fetchAll() {
       await Promise.all(
         (Object.entries(SOUND_FILES) as [SoundName, string][]).map(
           async ([name, path]) => {
             try {
               const res = await fetch(path);
               if (!res.ok) throw new Error(`HTTP ${res.status}`);
-              const arrayBuffer = await res.arrayBuffer();
-              buffersRef.current[name] = await ctx.decodeAudioData(arrayBuffer);
+              rawBuffersRef.current[name] = await res.arrayBuffer();
             } catch (err) {
               console.warn(
-                `AudioProvider: failed to load "${name}" (${path})`,
+                `AudioProvider: failed to fetch "${name}" (${path})`,
                 err,
               );
             }
@@ -60,7 +59,18 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         ),
       );
     }
-    loadAll().then(() => {
+    fetchAll();
+  }, []);
+
+  function handleStart() {
+    const ctx = getCtx();
+    Promise.all(
+      (Object.keys(rawBuffersRef.current) as SoundName[]).map(async (name) => {
+        const raw = rawBuffersRef.current[name];
+        if (!raw) return;
+        buffersRef.current[name] = await ctx.decodeAudioData(raw);
+      }),
+    ).then(() => {
       musicRef.current?.play();
       setStarted(true);
     });
