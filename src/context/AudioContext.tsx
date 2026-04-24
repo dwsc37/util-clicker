@@ -39,7 +39,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const audio = new Audio("/sounds/background.mp3");
     audio.loop = true;
-    audio.volume = 0.08;
+    audio.volume = 0.06;
     musicRef.current = audio;
     return () => {
       audio.pause();

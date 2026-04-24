@@ -113,7 +113,7 @@ function ActiveMessageModal({ message }: { message: TerminalMessage }) {
           <Typography
             sx={{
               fontFamily: "monospace",
-              fontSize: "0.75rem",
+              fontSize: "0.9rem",
               color: "#3fb950",
             }}
           >
@@ -122,7 +122,7 @@ function ActiveMessageModal({ message }: { message: TerminalMessage }) {
           <Typography
             sx={{
               fontFamily: "monospace",
-              fontSize: "0.7rem",
+              fontSize: "0.9rem",
               color: "#8b949e",
             }}
           >
@@ -134,7 +134,7 @@ function ActiveMessageModal({ message }: { message: TerminalMessage }) {
           <Typography
             sx={{
               fontFamily: "monospace",
-              fontSize: "0.95rem",
+              fontSize: "1rem",
               color: "#e6edf3",
               lineHeight: 1.7,
             }}
@@ -288,7 +288,7 @@ function MessageRow({
         <Typography
           sx={{
             fontFamily: "monospace",
-            fontSize: "0.75rem",
+            fontSize: "0.8rem",
             color: "#3fb950",
             flexShrink: 0,
           }}
@@ -298,7 +298,7 @@ function MessageRow({
         <Typography
           sx={{
             fontFamily: "monospace",
-            fontSize: "0.75rem",
+            fontSize: "0.8rem",
             color: "#8b949e",
             flexShrink: 0,
           }}
@@ -309,7 +309,7 @@ function MessageRow({
       <Typography
         sx={{
           fontFamily: "monospace",
-          fontSize: "0.8rem",
+          fontSize: "0.9rem",
           color: isLast ? "#e6edf3" : "#6e7681",
           lineHeight: 1.65,
         }}
