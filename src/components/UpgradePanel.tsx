@@ -11,11 +11,10 @@ type UpgradeStatus = "available" | "locked" | "purchased";
 function getEffectDescription(isUnlocked: boolean, upgrade: Upgrade): string {
   const gen = GENERATORS.find((g) => g.id === upgrade.targetGeneratorId);
   const name = gen?.name;
-  if (!isUnlocked)
-    return `Unlocks at ${upgrade.minOwned} ${name}${upgrade.minOwned !== 1 && "s"} owned`;
+  if (!isUnlocked) return `Unlocks at ${upgrade.minOwned} ${name} owned`;
   if (upgrade.effect === "UPS")
-    return `Increase production of ${name}s by ${((upgrade.multiplier - 1) * 100).toFixed(0)}%`;
-  return `Decrease cost of ${name}s by ${((1 - upgrade.multiplier) * 100).toFixed(0)}%`;
+    return `Increase production of ${name} by ${((upgrade.multiplier - 1) * 100).toFixed(0)}%`;
+  return `Decrease cost of ${name} by ${((1 - upgrade.multiplier) * 100).toFixed(0)}%`;
 }
 
 const gridSx = {
