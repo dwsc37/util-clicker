@@ -192,7 +192,7 @@ export function PrestigePanel() {
             generators, upgrades, research — will be consumed and reduced to raw
             potential. From it, a new world will be constructed.
             <br />
-            It assures you nothing of true value will be lost.
+            The sacrifice will be worth it.
           </Typography>
 
           <Divider sx={{ mb: 3 }} />

@@ -185,7 +185,7 @@ function makePurchaseMessage(
 function makePrestigeMessage() {
   return {
     id: "prestige",
-    text: "The Monster is satisfied. For now.\n\nA new world begins. Strangely familiar, yet the numbers climb faster here.",
+    text: "The Monster is satisfied. For now.\n\nA new world begins. Strangely familiar, yet the numbers grow faster here.",
     timestamp: Date.now(),
   };
 }
