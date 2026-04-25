@@ -188,9 +188,11 @@ export function PrestigePanel() {
             color="text.primary"
             sx={{ fontSize: "1.1rem", lineHeight: 1.9, mb: 3 }}
           >
-            The Monster extends an offer. Everything that exists — your
-            generators, your upgrades, your research — consumed, and converted
-            into raw potential for the next world.
+            The Monster extends an offer. Everything you have built —
+            generators, upgrades, research — will be consumed and reduced to raw
+            potential. From it, a new world will be constructed.
+            <br />
+            It assures you nothing of true value will be lost.
           </Typography>
 
           <Divider sx={{ mb: 3 }} />

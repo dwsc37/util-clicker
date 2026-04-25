@@ -182,13 +182,20 @@ function makePurchaseMessage(
   };
 }
 
+function makePrestigeMessage() {
+  return {
+    id: "prestige",
+    text: "The Monster is satisfied. For now.\n\nA new world begins. Strangely familiar, yet the numbers climb faster here.",
+    timestamp: Date.now(),
+  };
+}
+
 function getPendingEvents(state: GameState): GameEvent[] {
   return EVENTS.filter(
     (e) =>
       !state.triggeredEvents[e.id] &&
-      state.totalUtilsEarned >= e.unlockAt &&
       (e.condition == null || e.condition(state)),
-  ).sort((a, b) => a.unlockAt - b.unlockAt) as GameEvent[];
+  ) as GameEvent[];
 }
 
 function triggerMessage(state: GameState): GameState {
@@ -435,6 +442,8 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         freshGenerators[g.id] = 0;
       });
 
+      const prestigeMessage = makePrestigeMessage();
+
       return {
         gameStarted: true,
         utils: 0,
@@ -447,9 +456,9 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         generatorEarnings: {},
         purchasedUpgrades: {},
         purchasedResearches: {},
-        terminalMessages: [],
+        terminalMessages: [prestigeMessage],
         triggeredEvents: preservedTriggeredEvents,
-        activeMessage: null,
+        activeMessage: prestigeMessage,
         prestigeMultiplier: newMultiplier,
       };
     }

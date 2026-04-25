@@ -133,6 +133,7 @@ function ActiveMessageModal({ message }: { message: TerminalMessage }) {
         <Box>
           <Typography
             sx={{
+              whiteSpace: "pre-wrap",
               fontFamily: "monospace",
               fontSize: "1rem",
               color: "#e6edf3",
@@ -308,6 +309,7 @@ function MessageRow({
       </Box>
       <Typography
         sx={{
+          whiteSpace: "pre-wrap",
           fontFamily: "monospace",
           fontSize: "0.9rem",
           color: isLast ? "#e6edf3" : "#6e7681",
