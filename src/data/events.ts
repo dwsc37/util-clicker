@@ -1,10 +1,14 @@
-import type { GameState } from "../store/reducer";
+import { computeTotalUPS, type GameState } from "../store/reducer";
 import { formatUtils } from "../utils/format";
 import {
   RESEARCH_UNLOCK_THRESHOLD,
   RESEARCHES,
   type ResearchType,
 } from "./research";
+import {
+  PRESTIGE_HERALD_THRESHOLD,
+  PRESTIGE_UNLOCK_THRESHOLD,
+} from "./prestige";
 
 export type EventType = "message" | "qte";
 
@@ -15,6 +19,7 @@ export type GameEventBase = {
   message: string | ((state: GameState) => string);
   gameEffect?: (state: GameState) => GameState;
   condition?: (state: GameState) => boolean;
+  retriggerable?: boolean;
 };
 
 export type MessageEvent = GameEventBase & {
@@ -53,6 +58,7 @@ const drowningChild1: QTEEvent = {
   id: "drowning_child_1",
   type: "qte",
   unlockAt: 50,
+  retriggerable: true,
   message:
     "A child is drowning in a shallow pond nearby. You could wade in and save them. It would cost you next to nothing. Or perhaps your utils are better allocated elsewhere. What do you do?",
   choices: [
@@ -62,6 +68,7 @@ const drowningChild1: QTEEvent = {
         id: "drowning_child_1_save",
         type: "message",
         unlockAt: 0,
+        retriggerable: true,
         message: "You wade into the pond and save the child.",
         gameEffect: (state) => ({
           ...state,
@@ -75,6 +82,7 @@ const drowningChild1: QTEEvent = {
         id: "drowning_child_1_ignore",
         type: "message",
         unlockAt: 0,
+        retriggerable: true,
         message:
           "You ignore the child. The splashing fades. Utility maximisation requires difficult trade-offs, you remind yourself.",
       },
@@ -86,6 +94,7 @@ const drowningChild2: QTEEvent = {
   id: "drowning_child_2",
   type: "qte",
   unlockAt: 5_000,
+  retriggerable: true,
   condition: (state) => state.triggeredEvents["drowning_child_1_save"] === true,
   message:
     "A child is drowning in a pond again. Remarkably similar circumstances. The cost of intervention has risen. Your time is worth more now. What do you do?",
@@ -96,6 +105,7 @@ const drowningChild2: QTEEvent = {
         id: "drowning_child_2_save",
         type: "message",
         unlockAt: 0,
+        retriggerable: true,
         message: "You save the child. They look identical to the last one.",
         gameEffect: (state) => ({
           ...state,
@@ -109,6 +119,7 @@ const drowningChild2: QTEEvent = {
         id: "drowning_child_2_ignore",
         type: "message",
         unlockAt: 0,
+        retriggerable: true,
         message:
           "You ignore the child. The splashing fades. Utility maximisation requires difficult trade-offs, you remind yourself.",
       },
@@ -120,6 +131,7 @@ const drowningChild3: QTEEvent = {
   id: "drowning_child_3",
   type: "qte",
   unlockAt: 500_000,
+  retriggerable: true,
   condition: (state) => state.triggeredEvents["drowning_child_2_save"] === true,
   message:
     "There is a child drowning in the pond. Again. You know the pond well now. At this scale of operations, the disruption cost is significant. And yet — it is a child. It is always a child. What do you do?",
@@ -130,6 +142,7 @@ const drowningChild3: QTEEvent = {
         id: "drowning_child_3_save",
         type: "message",
         unlockAt: 0,
+        retriggerable: true,
         message:
           "Yet again, you save the child. You wonder how many ponds there are in the world.",
         gameEffect: (state) => ({
@@ -144,6 +157,7 @@ const drowningChild3: QTEEvent = {
         id: "drowning_child_3_ignore",
         type: "message",
         unlockAt: 0,
+        retriggerable: true,
         message:
           "You ignore the child. The splashing fades. Utility maximisation requires difficult trade-offs, you remind yourself.",
       },
@@ -155,6 +169,7 @@ const drowningChild4: QTEEvent = {
   id: "drowning_child_4",
   type: "qte",
   unlockAt: 50_000_000,
+  retriggerable: true,
   condition: (state) => state.triggeredEvents["drowning_child_3_save"] === true,
   message:
     "The pond is still there. The child is still there. You have saved three children from this pond already. Or perhaps it is the same child, or no child at all, and the pond is simply a test you keep administering to yourself. The cost now is larger than ever before. You go anyway. Don't you?",
@@ -165,6 +180,7 @@ const drowningChild4: QTEEvent = {
         id: "drowning_child_4_save",
         type: "message",
         unlockAt: 0,
+        retriggerable: true,
         message:
           "You save the child. You don't know their name. You never did.",
         gameEffect: (state) => ({
@@ -179,6 +195,7 @@ const drowningChild4: QTEEvent = {
         id: "drowning_child_4_ignore",
         type: "message",
         unlockAt: 0,
+        retriggerable: true,
         message:
           "You ignore the child. The splashing fades. Utility maximisation requires difficult trade-offs, you remind yourself.",
       },
@@ -204,13 +221,22 @@ function applyGeneratorPenalty(state: GameState, fraction: number): GameState {
   for (const [id, count] of Object.entries(state.ownedGenerators)) {
     newOwned[id] = Math.floor(count * (1 - fraction));
   }
-  return { ...state, ownedGenerators: newOwned };
+  return {
+    ...state,
+    utilsPerSecond: computeTotalUPS(
+      newOwned,
+      state.purchasedResearches,
+      state.prestigeMultiplier,
+    ),
+    ownedGenerators: newOwned,
+  };
 }
 
 const researchPenaltyAI: MessageEvent = {
   id: "research_penalty_ai",
   type: "message",
   unlockAt: 2e8,
+  retriggerable: true,
   message: (state: GameState) => {
     const count = countResearchByType(state, "AI");
     const msgs = [
@@ -238,6 +264,7 @@ const researchPenaltyPandemic: MessageEvent = {
   id: "research_penalty_pandemic",
   type: "message",
   unlockAt: 3e8,
+  retriggerable: true,
   message: (state: GameState) => {
     const count = countResearchByType(state, "PANDEMIC");
     const msgs = [
@@ -262,15 +289,16 @@ const researchPenaltyNuclear: MessageEvent = {
   id: "research_penalty_nuclear",
   type: "message",
   unlockAt: 4e8,
+  retriggerable: true,
   message: (state: GameState) => {
     const count = countResearchByType(state, "NUCLEAR");
     const msgs = [
-      "NUCLEAR EMERGENCY: A limited nuclear exchange has occurred. Your nuclear prepartion research investment: zero. A nuclear winter has crippled your operations. 95% of your physical infrastructure is offline.",
+      "NUCLEAR EMERGENCY: A limited nuclear exchange has occurred. Your nuclear preparation research investment: zero. A nuclear winter has crippled your operations. 95% of your physical infrastructure is offline.",
       "NUCLEAR EMERGENCY: A limited nuclear exchange has occurred. Your nuclear preparation research investment provided little benefit. Nuclear winter conditions are developing. 75% of your generators are offline.",
       "NUCLEAR ALERT: A limited nuclear exchange has occurred. Some nuclear prepation research investment was in place. It is not enough, but it is something. 55% of your generators are offline.",
-      "NUCLEAR ALERT: A limited nuclear exchange has occurred. Your nuclear prepartion research investment has paid off. Seed vaults are being accessed, shelter networks are providing refuge. 35% of your generators are offline.",
+      "NUCLEAR ALERT: A limited nuclear exchange has occurred. Your nuclear preparation research investment has paid off. Seed vaults are being accessed, shelter networks are providing refuge. 35% of your generators are offline.",
       "NUCLEAR NOTICE: A limited nuclear exchange has occurred. Your investment in nuclear preparation research has significantly reduced the impact. Food production has been partially maintained. 15% of your generators are offline.",
-      "NUCLEAR NOTICE: A limited nuclear exchange has occurred. Your comprehensive nuclear preparation research has positioned your operation to weather the aftermath. 5% of generators offline in directly affected zones. You prepared for the worst. It arrived.",
+      "NUCLEAR NOTICE: A limited nuclear exchange has occurred. Your comprehensive nuclear preparation research has positioned your operation to weather the aftermath.  You prepared for the worst. It arrived.",
     ];
     return msgs[Math.min(count, msgs.length - 1)];
   },
@@ -280,6 +308,22 @@ const researchPenaltyNuclear: MessageEvent = {
       NUCLEAR_PENALTIES[Math.min(count, NUCLEAR_PENALTIES.length - 1)];
     return applyGeneratorPenalty(state, penalty);
   },
+};
+
+const prestigeHerald: MessageEvent = {
+  id: "prestige_herald",
+  type: "message",
+  unlockAt: PRESTIGE_HERALD_THRESHOLD,
+  message:
+    "COSMIC ANOMALY DETECTED: Something is approaching. It wants utils. All of them. Every unit of utility you have ever generated has been noticed. It is coming.",
+};
+
+const prestigeArrival: MessageEvent = {
+  id: "prestige_arrival",
+  type: "message",
+  unlockAt: PRESTIGE_UNLOCK_THRESHOLD,
+  message:
+    "It is here. The Utility Monster stands at the threshold of your world. It does not negotiate. It does not threaten. It simply waits. Feed it everything you have, and something greater awaits you on the other side.",
 };
 
 export const EVENTS: GameEvent[] = [
@@ -327,4 +371,8 @@ export const EVENTS: GameEvent[] = [
   researchPenaltyAI,
   researchPenaltyPandemic,
   researchPenaltyNuclear,
+
+  // Prestige events
+  prestigeHerald,
+  prestigeArrival,
 ];

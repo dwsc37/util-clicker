@@ -4,7 +4,7 @@ import type { GameAction } from "../store/reducer";
 
 export function useGameLoop(
   dispatch: React.Dispatch<GameAction>,
-  tickInterval = 20,
+  tickInterval = 50,
 ): void {
   const delta = tickInterval / 1000;
 

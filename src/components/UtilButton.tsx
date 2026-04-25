@@ -90,7 +90,7 @@ export function UtilButton() {
         variant="overline"
         sx={{
           color: "text.secondary",
-          fontSize: "1rem",
+          fontSize: "1.1rem",
         }}
       >
         Turn the crank
@@ -100,7 +100,7 @@ export function UtilButton() {
         variant="caption"
         sx={{
           color: "text.secondary",
-          fontSize: "1rem",
+          fontSize: "1.1rem",
         }}
       >
         {formatUtils(state.utilsPerClick)} utils per click

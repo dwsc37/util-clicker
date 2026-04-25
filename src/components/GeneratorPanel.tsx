@@ -5,6 +5,7 @@ import { formatUtils } from "../utils/format";
 import { useGame } from "../context/GameContext";
 import lock from "../assets/lock.png";
 import { useAudio } from "../context/AudioContext";
+import StatRow from "./StatRow";
 
 export function GeneratorList() {
   const { state, dispatch } = useGame();
@@ -39,11 +40,17 @@ export function GeneratorList() {
           const cost = getGeneratorCost(gen.id, owned, state.purchasedUpgrades);
           const canAfford = state.utils >= cost;
           const isUnlocked = state.totalUtilsEarned >= gen.baseCost;
-          const upsEach = getGeneratorUPS(gen.id, 1, state.purchasedUpgrades);
+          const upsEach = getGeneratorUPS(
+            gen.id,
+            1,
+            state.purchasedUpgrades,
+            state.prestigeMultiplier,
+          );
           const upsTotal = getGeneratorUPS(
             gen.id,
             owned,
             state.purchasedUpgrades,
+            state.prestigeMultiplier,
           );
           const totalEarned = state.generatorEarnings[gen.id] ?? 0;
 
@@ -143,39 +150,6 @@ export function GeneratorList() {
           );
         })}
       </Box>
-    </Box>
-  );
-}
-
-function StatRow({ label, value }: { label: string; value: string }) {
-  return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "baseline",
-        gap: 0.5,
-      }}
-    >
-      <Typography
-        variant="caption"
-        sx={{
-          fontStyle: "italic",
-          fontSize: "1rem",
-        }}
-      >
-        {label}
-      </Typography>
-      <Typography
-        variant="caption"
-        sx={{
-          fontSize: "1rem",
-          textAlign: "right",
-          fontWeight: 550,
-        }}
-      >
-        {value}
-      </Typography>
     </Box>
   );
 }

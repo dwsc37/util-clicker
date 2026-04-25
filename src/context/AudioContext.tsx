@@ -7,6 +7,7 @@ type AudioContextValue = {
   playKeyPress: () => void;
   playCrank: () => void;
   playClick: () => void;
+  playConsume: () => void;
 };
 
 const AudioCtx = createContext<AudioContextValue | null>(null);
@@ -17,7 +18,8 @@ type SoundName =
   | "keyPress3"
   | "keyPress4"
   | "crank"
-  | "click";
+  | "click"
+  | "consume";
 
 const SOUND_FILES: Record<SoundName, string> = {
   keyPress1: "/sounds/key-press-1.wav",
@@ -26,6 +28,7 @@ const SOUND_FILES: Record<SoundName, string> = {
   keyPress4: "/sounds/key-press-4.wav",
   crank: "/sounds/crank.wav",
   click: "/sounds/click.wav",
+  consume: "/sounds/consume.wav",
 };
 
 export function AudioProvider({ children }: { children: React.ReactNode }) {
@@ -39,7 +42,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const audio = new Audio("/sounds/background.mp3");
     audio.loop = true;
-    audio.volume = 0.06;
+    audio.volume = 0.05;
     musicRef.current = audio;
     return () => {
       audio.pause();
@@ -119,8 +122,14 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     play("click", 0.3);
   }
 
+  function playConsume() {
+    play("consume", 0.2, 1);
+  }
+
   return (
-    <AudioCtx.Provider value={{ playKeyPress, playCrank, playClick }}>
+    <AudioCtx.Provider
+      value={{ playKeyPress, playCrank, playClick, playConsume }}
+    >
       {!started && (
         <Box
           onClick={handleStart}

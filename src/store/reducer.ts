@@ -8,6 +8,7 @@ import {
   resolveMessage,
 } from "../data/events";
 import { RESEARCHES, type Research } from "../data/research";
+import { computePrestigeMultiplier } from "../data/prestige";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -24,6 +25,9 @@ export type GameState = {
   gameStarted: boolean;
   utils: number;
   totalUtilsEarned: number;
+  lifetimeUtilsEarned: number;
+  prestigeCount: number;
+  prestigeMultiplier: number;
   utilsPerClick: number;
   utilsPerSecond: number;
   ownedGenerators: Record<string, number>;
@@ -43,7 +47,8 @@ export type GameAction =
   | { type: "BUY_UPGRADE"; payload: { upgradeId: string } }
   | { type: "BUY_RESEARCH"; payload: { researchId: string } }
   | { type: "ACKNOWLEDGE_MESSAGE" }
-  | { type: "RESOLVE_QTE"; payload: { choiceIndex: 0 | 1 } };
+  | { type: "RESOLVE_QTE"; payload: { choiceIndex: 0 | 1 } }
+  | { type: "PRESTIGE" };
 
 // ---------------------------------------------------------------------------
 // Action Constants
@@ -58,6 +63,7 @@ export const ACTIONS = {
   BUY_RESEARCH: "BUY_RESEARCH",
   ACKNOWLEDGE_MESSAGE: "ACKNOWLEDGE_MESSAGE",
   RESOLVE_QTE: "RESOLVE_QTE",
+  PRESTIGE: "PRESTIGE",
 } as const;
 
 // ---------------------------------------------------------------------------
@@ -74,6 +80,9 @@ export function buildInitialState(): GameState {
     gameStarted: false,
     utils: 0,
     totalUtilsEarned: 0,
+    lifetimeUtilsEarned: 0,
+    prestigeCount: 0,
+    prestigeMultiplier: 1,
     utilsPerClick: 1,
     utilsPerSecond: 0,
     ownedGenerators,
@@ -112,6 +121,7 @@ export function getGeneratorUPS(
   generatorId: string,
   owned: number,
   purchasedUpgrades: Record<string, true>,
+  prestigeMultiplier: number,
 ): number {
   if (owned === 0) return 0;
   const gen = GENERATORS.find((g) => g.id === generatorId);
@@ -124,16 +134,19 @@ export function getGeneratorUPS(
       purchasedUpgrades[u.id],
   ).reduce((acc, u) => acc * u.multiplier, 1);
 
-  return gen.baseUPS * owned * upsMultiplier;
+  return gen.baseUPS * owned * upsMultiplier * prestigeMultiplier;
 }
 
 export function computeTotalUPS(
   ownedGenerators: Record<string, number>,
   purchasedUpgrades: Record<string, true>,
+  prestigeMultiplier: number,
 ): number {
-  return Object.entries(ownedGenerators).reduce((total, [id, owned]) => {
-    return total + getGeneratorUPS(id, owned, purchasedUpgrades);
-  }, 0);
+  return Object.entries(ownedGenerators).reduce(
+    (total, [id, owned]) =>
+      total + getGeneratorUPS(id, owned, purchasedUpgrades, prestigeMultiplier),
+    0,
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -258,12 +271,14 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         gameStarted: true,
       };
     }
+
     case ACTIONS.CLICK: {
       const gained = state.utilsPerClick;
       const next: GameState = {
         ...state,
         utils: state.utils + gained,
         totalUtilsEarned: state.totalUtilsEarned + gained,
+        lifetimeUtilsEarned: state.lifetimeUtilsEarned + gained,
       };
       return triggerMessage(next);
     }
@@ -274,8 +289,12 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       Object.entries(state.ownedGenerators).forEach(([id, owned]) => {
         if (owned > 0) {
           const earned =
-            getGeneratorUPS(id, owned, state.purchasedUpgrades) *
-            action.payload.delta;
+            getGeneratorUPS(
+              id,
+              owned,
+              state.purchasedUpgrades,
+              state.prestigeMultiplier,
+            ) * action.payload.delta;
           newEarnings[id] = (newEarnings[id] ?? 0) + earned;
           gained += earned;
         }
@@ -284,6 +303,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         ...state,
         utils: state.utils + gained,
         totalUtilsEarned: state.totalUtilsEarned + gained,
+        lifetimeUtilsEarned: state.lifetimeUtilsEarned + gained,
         generatorEarnings: newEarnings,
       };
       return triggerMessage(next);
@@ -309,7 +329,11 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         ...state,
         utils: state.utils - cost,
         ownedGenerators: newOwned,
-        utilsPerSecond: computeTotalUPS(newOwned, state.purchasedUpgrades),
+        utilsPerSecond: computeTotalUPS(
+          newOwned,
+          state.purchasedUpgrades,
+          state.prestigeMultiplier,
+        ),
       };
 
       return triggerMessage(next);
@@ -331,7 +355,11 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         ...state,
         utils: state.utils - upgrade.cost,
         purchasedUpgrades: newPurchased,
-        utilsPerSecond: computeTotalUPS(state.ownedGenerators, newPurchased),
+        utilsPerSecond: computeTotalUPS(
+          state.ownedGenerators,
+          newPurchased,
+          state.prestigeMultiplier,
+        ),
       };
 
       return triggerMessage(next);
@@ -387,6 +415,42 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           consequenceMessage,
         ],
         activeMessage: consequenceMessage,
+      };
+    }
+
+    case ACTIONS.PRESTIGE: {
+      const newMultiplier = computePrestigeMultiplier(
+        state.lifetimeUtilsEarned,
+      );
+
+      const preservedTriggeredEvents = Object.fromEntries(
+        Object.entries(state.triggeredEvents).filter(([id]) => {
+          const event = EVENTS.find((e) => e.id === id);
+          return event != null && !event.retriggerable;
+        }),
+      ) as Record<string, true>;
+
+      const freshGenerators: Record<string, number> = {};
+      GENERATORS.forEach((g) => {
+        freshGenerators[g.id] = 0;
+      });
+
+      return {
+        gameStarted: true,
+        utils: 0,
+        totalUtilsEarned: 0,
+        lifetimeUtilsEarned: state.lifetimeUtilsEarned,
+        prestigeCount: state.prestigeCount + 1,
+        utilsPerClick: newMultiplier,
+        utilsPerSecond: 0,
+        ownedGenerators: freshGenerators,
+        generatorEarnings: {},
+        purchasedUpgrades: {},
+        purchasedResearches: {},
+        terminalMessages: [],
+        triggeredEvents: preservedTriggeredEvents,
+        activeMessage: null,
+        prestigeMultiplier: newMultiplier,
       };
     }
   }

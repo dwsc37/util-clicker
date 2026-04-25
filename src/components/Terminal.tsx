@@ -355,7 +355,7 @@ export function Terminal() {
         <Typography
           sx={{
             fontFamily: "monospace",
-            fontSize: "0.8rem",
+            fontSize: "0.9rem",
             color: "#8b949e",
             letterSpacing: "0.15em",
           }}

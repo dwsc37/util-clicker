@@ -8,6 +8,7 @@ import { UtilButton } from "./components/UtilButton";
 import { ShopPanel } from "./components/ShopPanel";
 import { Terminal } from "./components/Terminal";
 import { AudioProvider } from "./context/AudioContext";
+import { PrestigePanel } from "./components/PrestigePanel";
 
 export default function App() {
   return (
@@ -39,6 +40,7 @@ export default function App() {
               <Box>
                 <UtilCounter />
                 <UtilButton />
+                <PrestigePanel />
               </Box>
 
               <Terminal />
